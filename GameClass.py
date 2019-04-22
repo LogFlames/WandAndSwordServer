@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import struct
+import time
+from datetime import datetime
 
 class GameClass:
     def __init__(self, bufOrMsg):
@@ -43,7 +45,6 @@ class GameClass:
                     # pos 1
                     
                     unpacked_id = struct.unpack('B', incoming[:1])[0]
-                    print(unpacked_id)
                     if unpacked_id == 0:
                         client.recvMessage = incoming
                         client.recver = 0

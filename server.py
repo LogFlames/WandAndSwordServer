@@ -9,6 +9,8 @@ import struct
 from ClientClass import *
 from GameClass import *
 
+current_milli_time = lambda: int(round(time.time() * 1000))
+
 try:
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error:
@@ -150,7 +152,7 @@ while running:
         s = False
 
     if s:
-        if  playerCap != -1 and len(game.clients) >= playerCap:
+        if playerCap != -1 and len(game.clients) >= playerCap:
             print('Kicked {} from the server, already {}/{} players online'.format(s.addr, str(playerCap), str(playerCap)))
             s.close()
         else:
