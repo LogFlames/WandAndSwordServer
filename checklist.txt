@@ -1,0 +1,5 @@
+* Multiple clients - Done
+* Make so that the clients can see each others movement
+
+* Hub Server
+* Lobby Creation
