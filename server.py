@@ -89,6 +89,16 @@ while bufferOrMsg == 'none':
     else:
         print("    Option '{}' isn't known by the program, please try again".format(bufOrMsgInput))
 
+playerCap = -1
+while playerCap == -1:
+    playerCap_str = input('How many players should be able to join? (-1 == no limit): ')
+    try:
+        playerCap = int(playerCap_str)
+        if playerCap == -1:
+            break
+    except:
+        print("{} isn't a whole numeric value".format(playerCap_str))
+
 game = GameClass(bufferOrMsg)
 clientID = 0
 
@@ -140,13 +150,17 @@ while running:
         s = False
 
     if s:
-        clientID += 1
-        game.addClient(ClientClass(clientID, s, addr))
+        if  playerCap != -1 and len(game.clients) >= playerCap:
+            print('Kicked {} from the server, already {}/{} players online'.format(s.addr, str(playerCap), str(playerCap)))
+            s.close()
+        else:
+            clientID += 1
+            game.addClient(ClientClass(clientID, s, addr))
 
-        s.setblocking(0)
-        s.settimeout(0.03)
+            s.setblocking(0)
+            s.settimeout(0.03)
 
-        print('Incomming connection from {}'.format(addr))
+            print('Incomming connection from {}'.format(addr))
 
     game.recvData()
 
