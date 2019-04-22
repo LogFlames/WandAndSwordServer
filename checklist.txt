@@ -33,3 +33,8 @@
 * Cheater? (Get the n1 rank in Wand & Sword in the world)
 * Supporter (Support the game by giving us money or buy cosmetics)
 * Hype beast (Buy all the cosmetics)
+
+/// SYSTEM
+* Ability to control server via text message
+* Setup SSH
+* Setup FTP
