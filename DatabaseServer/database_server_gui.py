@@ -1,14 +1,21 @@
+# -*- coding: utf-8 -*-
+
 from tkinter import *
 import time
 import sys
 
-from database_server import *
-
 terminal = None
+screen = None
+
+reqE = False
+
+def reqExit():
+    return reqE
 
 def main_screen():
     global terminal
-    
+    global screen
+
     screen = Tk()
     screen.geometry("900x700")
     screen.resizable(False, False)
@@ -26,12 +33,9 @@ def main_screen():
     terminal = Application(left_frame, "text")
     terminal.pack()
     Application(left_frame, "input").pack()
-    
-    screen.mainloop()
 
-def startdb():
-    for n in range(100):
-        terminal.addText("Yay" + str(n))
+def print_gui(msg):
+    terminal.addText(msg)
 
 class Application(Frame):
     def __init__(self, master, typ):
@@ -67,15 +71,17 @@ class Application(Frame):
 
     def process_input(self, event=None):
         if self.typ == "text":
-            return
+            return "break"
+    
         # if there is an event, it happened before the class binding,
         # thus before the newline actually got inserted; we'll
         # do that here, then skip the class binding.
         self.text.insert("end", "\n")
         command = self.text.get("end-of-prompt", "end-1c")
         command = command.strip()
-        if command == "startdb()":
-            startdb()
+        if command == "exit":
+            global reqE
+            reqE = True
         #self.text.insert("end", "output of the command '%s'...!" % command)
         self.text.see("end")
         self.insert_prompt()
@@ -86,5 +92,5 @@ class Application(Frame):
 
     def addText(self, msg):
         self.text.insert("end", msg + "\n")
-
+    
 main_screen()

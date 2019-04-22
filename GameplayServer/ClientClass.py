@@ -6,6 +6,9 @@ class ClientClass:
         self.addr = addr
         self.clientSocket = connection
 
+        self.name = ""
+        self.lastName = ""
+
         self.toBeRemoved = False
 
         self.recvMessage = ''

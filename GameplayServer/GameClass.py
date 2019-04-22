@@ -3,11 +3,12 @@
 import struct
 import time
 from datetime import datetime
+import socket
+import itertools
 
 class GameClass:
-    def __init__(self, bufOrMsg):
+    def __init__(self):
         self.clients = []
-        self.bufOrMsg = bufOrMsg
 
     def addClient(self, client):
         self.clients.append(client)
@@ -39,28 +40,57 @@ class GameClass:
                 gotData = False
 
             if gotData:
-                if self.bufOrMsg == 'buf':
-                    # unpack struct
-                    # ping 0
-                    # pos 1
-                    
-                    unpacked_id = struct.unpack('B', incoming[:1])[0]
-                    if unpacked_id == 0:
-                        client.recvMessage = incoming
-                        client.recver = 0
-                    else:
-                        client.recvMessage = incoming
-                        client.recver = 1
-                elif self.bufOrMsg == 'msg':
-                    couldDecode = False
-                    try:
-                        incoming = incoming.decode('utf-8').strip()
-                        couldDecode = True
-                    except:
-                        print("Data {} couldn't be decoded by standard utf-8, check encodeing fucntion for adnormalities".format(incoming))
+                # unpack struct
+                # ping 0
+                # pos 1
+                
+                unpacked_id = struct.unpack('B', incoming[:1])[0]
+                if unpacked_id == 0:
+                    client.recvMessage = incoming
+                    client.recver = 0
+                elif unpacked_id == 2 or unpacked_id == 3:
+                    client.recver = 0
+                    data = incoming[4:].decode('utf-8').strip()
 
-                    if couldDecode:
-                        client.recvMessage = incoming
+                    splitData = list(filter(None, data.split('\x00')))
+                    if len(splitData) != 2:
+                        client.recvMessage = struct.pack('?', False)
+                        continue
+
+                    name, password = splitData
+
+                    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    s.setblocking(0)
+                    s.settimeout(1)
+                    try:
+                        s.connect(('192.168.10.171', 8060))
+                    except:
+                        print("Couldn't connect to database.")
+
+                    if unpacked_id == 2:
+                        s.sendall(("l:" + name + ":" + password + "\n").encode("utf-8"))
+                    elif unpacked_id == 3:
+                        s.sendall(("c:" + name + ":" + password + "\n").encode("utf-8"))
+                    
+                    try:
+                        db_response = s.recv(32)
+                    except:
+                        client.recvMessage = struct.pack('?', False)
+                        continue
+
+                    db_response = db_response.decode('utf-8').strip()
+                    success = False
+                    if db_response == '0':
+                        success = False
+                    elif db_response == '1':
+                        print('{}: successful login or account creation.'.format(name))
+                        success = True
+                        client.name = name
+
+                    client.recvMessage = struct.pack('?', success)
+                else:
+                    client.recvMessage = incoming
+                    client.recver = 1
 
     def sendData(self):
         for client in self.clients:
@@ -71,8 +101,15 @@ class GameClass:
                     for client2 in self.clients:
                         if client.clientID == client2.clientID:
                             continue
-                        if self.bufOrMsg == 'buf':
-                            client2.sendBufferToClient(client.recvMessage)
-                        if self.bufOrMsg == 'msg':
-                            client2.sendToClient(client.recvMessage)
+                        client2.sendBufferToClient(client.recvMessage)
                 client.recvMessage = ''
+            if client.name != client.lastName:
+                client.lastName = client.name
+
+                name = bytes(client.name, 'utf-8')
+                # THIS DOESN'T WORK
+                data = struct.pack('i' + 'c' * len(name), 5, *name)
+                for client2 in self.clients:
+                    if client.clientID == client2.clientID:
+                        continue
+                    client2.sendBufferToClient(data)

@@ -79,17 +79,7 @@ try:
 except:
     print('    Port {} is already in use on the host machine, free the port and try again.'.format('8059'))
 
-bufferOrMsg = 'none'
-while bufferOrMsg == 'none':
-    bufOrMsgInput = input('Should the program forward buffers or convert them into messages? (buf (standard) <---> msg): ')
-    if bufOrMsgInput == 'buf':
-        bufferOrMsg = 'buf'
-    elif bufOrMsgInput == 'msg':
-        bufferOrMsg = 'msg'
-    else:
-        print("    Option '{}' isn't known by the program, please try again".format(bufOrMsgInput))
-
-playerCap = -1
+playerCap = 2
 while playerCap == -1:
     playerCap_str = input('How many players should be able to join? (-1 == no limit): ')
     try:
@@ -99,7 +89,7 @@ while playerCap == -1:
     except:
         print("{} isn't a whole numeric value".format(playerCap_str))
 
-game = GameClass(bufferOrMsg)
+game = GameClass()
 clientID = 0
 
 serverSocket.listen(5)
