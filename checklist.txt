@@ -15,9 +15,13 @@
 * Awards for winning (Rare items, more xp, more money,
 
 /// SERVER & CLIENT
-* Client Login Screen - In Progress
+* Client Login - In Progress
+* Client Register - In Progress 
 * Database Login - In Progress
-* Admin accounts´
+* Database Register - In Progress
+* Admin accounts
+* Lobby Search - In Progress
+
 
 /// RANKING
 * The rank will be decided by the % of wins a player has, the higher the better.
