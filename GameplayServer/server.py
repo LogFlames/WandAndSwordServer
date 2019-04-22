@@ -9,8 +9,6 @@ import struct
 from ClientClass import *
 from GameClass import *
 
-current_milli_time = lambda: int(round(time.time() * 1000))
-
 try:
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error:
