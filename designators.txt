@@ -1,0 +1,4 @@
+0 = ping
+1 = position
+2 = login credentials
+3 = new account credentials
