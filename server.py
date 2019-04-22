@@ -106,7 +106,7 @@ clientID = 0
 
 serverSocket.listen(5)
 serverSocket.setblocking(0)
-serverSocket.settimeout(0.03)
+serverSocket.settimeout(0.001)
 
 running = True
 
@@ -160,7 +160,7 @@ while running:
             game.addClient(ClientClass(clientID, s, addr))
 
             s.setblocking(0)
-            s.settimeout(0.03)
+            s.settimeout(0.001)
 
             print('Incomming connection from {}'.format(addr))
 
