@@ -36,7 +36,19 @@ def addUser(name, password):
     
     return True
 
-def checkLogin():
-    pass
+def checkLogin(name, password):
+    try:
+        with open(os.path.join(path_to_users, name + ".ini"), "r"):
+            foundFile = True
+    except:
+        foundFile = False
+    
+    if not foundFile:
+        return False
 
-print(addUser("Pelle05", "abc123"))
+    config = configparser.ConfigParser()
+    config.read(os.path.join(path_to_users, name + ".ini"))
+
+    if config['credentials']['password'] == password:
+        return True
+    return False
