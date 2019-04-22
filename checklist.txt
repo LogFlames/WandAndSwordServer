@@ -1,11 +1,35 @@
-* Latency Measurements - In progress
+* Latency Measurements - Done
 * Multiple clients - Done
-* Make so that the clients can see each others movement
-* Basic animation sharing
-* Different characters
-* Emotes?
+* Make so that the clients can see each others movement - Done
 
+/// LEVEL DESIGN
+* Players can make custome maps.
+* 3 Maps, Forest, Open plain & Castle.
 
-* Hub Server
-* Lobby Creation (For clients)
-* Admin tools in the game
+/// PLAYER
+* Animations
+* Character Customization
+* Emotes
+* Attacks
+* Special Abilities
+* Awards for winning (Rare items, more xp, more money,
+
+/// SERVER & CLIENT
+* Client Login Screen - In Progress
+* Database Login - In Progress
+* Admin accounts´
+
+/// RANKING
+* The rank will be decided by the % of wins a player has, the higher the better.
+
+/// ACHIEVMENTS
+* It's a tie! (Tie 5 games)
+* It's a tie, the sequel! (tie 5 games in a row)
+* Crushing defeat (Loose all rounds in a game)
+* Mind bogeling victory! (Win all rounds in a game)
+* Win streak! (Win 5 games in a row)
+* Loser (Lose 5 games in a row)
+* Deranker (Drop 100 ranks)
+* Cheater? (Get the n1 rank in Wand & Sword in the world)
+* Supporter (Support the game by giving us money or buy cosmetics)
+* Hype beast (Buy all the cosmetics in the game)
