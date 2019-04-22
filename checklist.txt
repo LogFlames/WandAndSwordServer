@@ -1,5 +1,11 @@
+* Latency Measurements - In progress
 * Multiple clients - Done
 * Make so that the clients can see each others movement
+* Basic animation sharing
+* Different characters
+* Emotes?
+
 
 * Hub Server
-* Lobby Creation
+* Lobby Creation (For clients)
+* Admin tools in the game
