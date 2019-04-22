@@ -3,3 +3,4 @@
 2 = login credentials
 3 = new account credentiales
 4 = server to data base pull credentials request
+5 = username sharing
