@@ -7,7 +7,8 @@ import configparser
 
 USER_FOLDER = "USERS"
 
-path_to_users = os.path.join(os.path.dirname(__file__), USER_FOLDER)
+path_to_script = os.path.dirname(__file__)
+path_to_users = os.path.join(path_to_scipt, USER_FOLDER)
 
 def addUser(name, password):
     foundFile = False
@@ -20,8 +21,10 @@ def addUser(name, password):
     if foundFile:
         return False
 
-    with open(os.path.join(path_to_users, name + ".ini"), "w+"):
-        pass
+    with open(os.path.join(path_to_users, name + ".ini"), "w+") as f:
+        with open(os.path.join(path_to_script, "default.ini"), "r") as default_ini_file:
+            for line in default_ini_file:
+                f.write(line)
     
     config = configparser.ConfigParser()
     config.read(USER_FOLDER + name + ".ini")
@@ -35,4 +38,4 @@ def addUser(name, password):
 def checkLogin():
     pass
 
-print(addUser("Pelle", "abc123"))
+print(addUser("Pelle05", "abc123"))
