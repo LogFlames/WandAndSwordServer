@@ -67,7 +67,7 @@ class GameClass:
             if client.recvMessage != '':
                 if client.recver == 0:
                     client.sendBufferToClient(client.recvMessage)
-                elif client.recvMessage == 1:
+                elif client.recver == 1:
                     for client2 in self.clients:
                         if client.clientID == client2.clientID:
                             continue

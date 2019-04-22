@@ -153,7 +153,7 @@ while running:
 
     if s:
         if playerCap != -1 and len(game.clients) >= playerCap:
-            print('Kicked {} from the server, already {}/{} players online'.format(s.addr, str(playerCap), str(playerCap)))
+            print('Kicked {} from the server, already {}/{} players online'.format(addr, str(playerCap), str(playerCap)))
             s.close()
         else:
             clientID += 1
