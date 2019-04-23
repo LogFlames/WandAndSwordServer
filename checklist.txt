@@ -16,7 +16,7 @@
 * Emotes
 * Attacks
 * Special Abilities
-* Awards for winning (Rare items, more xp, more money,
+* Awards for winning (Rare items, more xp, more currency)
 
 /// SERVER & CLIENT
 * Client Login - Done
