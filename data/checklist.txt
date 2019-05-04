@@ -28,6 +28,7 @@
 * Database Register - Done
 * Admin Accounts
 * Lobby Search - On Hold
+* Kick individual client
 
 
 /// RANKING
