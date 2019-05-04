@@ -6,13 +6,26 @@ import struct
 import hashlib
 import os
 import configparser
+import datetime
 
 from database_server_gui import *
 
 USER_FOLDER = "USERS"
 
+LOG_FILES = "LOGS"
+
 path_to_script = os.path.dirname(__file__)
 path_to_users = os.path.join(path_to_script, USER_FOLDER)
+path_to_logs = os.path.join(path_to_script, LOG_FILES)
+
+os.makedirs(path_to_users, exist_ok=True)
+os.makedirs(path_to_logs, exist_ok=True)
+
+log_file = open(os.path.join(path_to_logs, "Log-{}.txt".format(str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
+
+def print_gui_with_log(msg):
+    print_gui(msg)
+    log_file.write(msg + "\n")
 
 def addUser(name, password):
     foundFile = False
@@ -61,7 +74,7 @@ def checkLogin(name, password):
 try:
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error:
-    print_gui("Failed to create initial socket. Exiting")
+    print_gui_with_log("Failed to create initial socket. Exiting")
     exit()
 
 def getIP():
@@ -69,9 +82,9 @@ def getIP():
     try:
         s.connect(('8.8.8.8', 80))
     except:
-        print_gui('No internet connection.')
-        print_gui('Try reconnection and restarting the server')
-        print_gui("Launching into default host: 'localhost'")
+        print_gui_with_log('No internet connection.')
+        print_gui_with_log('Try reconnection and restarting the server')
+        print_gui_with_log("Launching into default host: 'localhost'")
         return 'localhost'
 
     return s.getsockname()[0]
@@ -81,11 +94,11 @@ host = getIP()
 port = 8060
 try:
     serverSocket.bind((host, port))
-    print_gui(' ')
-    print_gui('Server is running on --> {}:{}'.format(host, str(port)))
-    print_gui(' ')
+    print_gui_with_log(' ')
+    print_gui_with_log('Server is running on --> {}:{}'.format(host, str(port)))
+    print_gui_with_log(' ')
 except:
-    print_gui('Port {} is already in use on the host machine, free the port and try again.'.format(str(port)))
+    print_gui_with_log('Port {} is already in use on the host machine, free the port and try again.'.format(str(port)))
 
 serverSocket.listen(5)
 serverSocket.setblocking(0)
@@ -103,7 +116,7 @@ while running:
         client = False
 
     if client:
-        print_gui('Incomming connection from {}'.format(addr))
+        print_gui_with_log('Incomming connection from {}'.format(addr))
         client.setblocking(0)
         client.settimeout(1)
 
@@ -140,11 +153,15 @@ while running:
             else:
                 client.sendall(("0" + "\n").encode('utf-8'))
         else:
-            print_gui("{} tried to send invalid command: {}".format(addr, incoming))
+            print_gui_with_log("{} tried to send invalid command: {}".format(addr, incoming))
         
-        print_gui('{} tried to login with {} and {}'.format(addr, name, pasw))
-        print_gui('Result of login: {}'.format(success))
+        print_gui_with_log('{} tried to login with {} and {}'.format(addr, name, pasw))
+        print_gui_with_log('Result of login: {}'.format(success))
 
         client.close()
 
+print_gui_with_log(" ")
+print_gui_with_log("Server closed.")
+
+log_file.close()
 serverSocket.close()

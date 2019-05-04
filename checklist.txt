@@ -2,6 +2,9 @@
 * Multiple clients - Done
 * Make so that the clients can see each others movement - Done
 
+/// BUGS
+* Client doesn't time out if disconnected from server while waiting for answer from gameplay server
+
 /// LEVEL DESIGN
 * Players can make custome maps.
 * 3 Maps, Forest, Open plain & Castle.

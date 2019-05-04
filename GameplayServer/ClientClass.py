@@ -7,13 +7,11 @@ class ClientClass:
         self.clientSocket = connection
 
         self.name = ""
-        self.lastName = ""
 
         self.toBeRemoved = False
 
-        self.recvMessage = ''
-        
-        self.recver = 1
+        self.recvMessage = []
+        self.recver = []
 
     def sendToClient(self, msg):
         try:

@@ -44,11 +44,12 @@ def read_kbd_input(inputQueue):
 hostChosen = False
 while not hostChosen:
     host = input("Use host-machine ip or localhost? (ip <---> localhost): ")
-    if host == "ip":
+    if host == "ip" or host == 'i':
         host = getIP()
         print('    Host ip set to: {}'.format(str(host)))
         hostChosen = True
-    elif host == 'localhost':
+    elif host == 'localhost' or host == 'l':
+        host = 'localhost'
         print('    Host is hosted only on local machine')
         hostChosen = True
     else:

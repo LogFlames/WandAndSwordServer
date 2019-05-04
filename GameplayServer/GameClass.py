@@ -31,6 +31,13 @@ class GameClass:
 
                 if len(incoming) == 0:
                     print('Kicked {} from the server'.format(client.addr))
+                    client.name = ' '
+                    for client2 in self.clients:
+                        if client.clientID == client2.clientID:
+                            continue
+                        data = struct.pack('i', 5) + (' ' + '\x00').encode('utf-8')
+                        client2.recvMessage.append(data)
+                        client2.recver.append(0)
                     client.clientSocket.close()
                     client.toBeRemoved = True
                 else:
@@ -43,18 +50,22 @@ class GameClass:
                 # unpack struct
                 # ping 0
                 # pos 1
+                # login 2
+                # register 3
+                # database and server 4
+                # usernames 5
                 
                 unpacked_id = struct.unpack('B', incoming[:1])[0]
                 if unpacked_id == 0:
-                    client.recvMessage = incoming
-                    client.recver = 0
+                    client.recvMessage.append(incoming)
+                    client.recver.append(0)
                 elif unpacked_id == 2 or unpacked_id == 3:
-                    client.recver = 0
                     data = incoming[4:].decode('utf-8').strip()
 
                     splitData = list(filter(None, data.split('\x00')))
                     if len(splitData) != 2:
-                        client.recvMessage = struct.pack('?', False)
+                        client.recvMessage.append(struct.pack('?', False))
+                        client.recver.append(0)
                         continue
 
                     name, password = splitData
@@ -75,7 +86,8 @@ class GameClass:
                     try:
                         db_response = s.recv(32)
                     except:
-                        client.recvMessage = struct.pack('?', False)
+                        client.recvMessage.append(struct.pack('?', False))
+                        client.recver.append(0)
                         continue
 
                     db_response = db_response.decode('utf-8').strip()
@@ -87,29 +99,35 @@ class GameClass:
                         success = True
                         client.name = name
 
-                    client.recvMessage = struct.pack('?', success)
+                        for client2 in self.clients:
+                            if client.clientID == client2.clientID:
+                                continue
+                            data = struct.pack('i', 5) + (client.name + '\x00').encode('utf-8')
+                            client2.recvMessage.append(data)
+                            client2.recver.append(0)
+
+                            # JUST WORK >:(
+                            # Pulling names from other clients
+                            data = struct.pack('i', 5) + (client2.name + '\x00').encode('utf-8')
+                            client.recvMessage.append(data)
+                            client.recver.append(0)
+                                
+                    client.recvMessage.insert(0, struct.pack('?', success))
+                    client.recver.insert(0, 0)
                 else:
-                    client.recvMessage = incoming
-                    client.recver = 1
+                    client.recvMessage.append(incoming)
+                    client.recver.append(1)
 
     def sendData(self):
         for client in self.clients:
-            if client.recvMessage != '':
-                if client.recver == 0:
-                    client.sendBufferToClient(client.recvMessage)
-                elif client.recver == 1:
+            if len(client.recvMessage) > 0:
+                if len(client.recver) == 0 or client.recver[0] == 0:
+                    client.sendBufferToClient(client.recvMessage[0])
+                else:
                     for client2 in self.clients:
                         if client.clientID == client2.clientID:
                             continue
-                        client2.sendBufferToClient(client.recvMessage)
-                client.recvMessage = ''
-            if client.name != client.lastName:
-                client.lastName = client.name
-
-                name = bytes(client.name, 'utf-8')
-                # THIS DOESN'T WORK
-                data = struct.pack('i' + 'c' * len(name), 5, *name)
-                for client2 in self.clients:
-                    if client.clientID == client2.clientID:
-                        continue
-                    client2.sendBufferToClient(data)
+                        client2.sendBufferToClient(client.recvMessage[0])
+                del client.recvMessage[0]
+                if len(client.recver) > 0:
+                    del client.recver[0]
