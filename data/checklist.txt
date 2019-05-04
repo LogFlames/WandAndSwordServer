@@ -1,3 +1,7 @@
+/// DEADLINES
+2019-06-13 - Game will be complete without game bare bones game mechanics and all networking done.
+2019-08-13 - Game will be completed with mechanics and animations plus sound fully implemented.
+
 * Latency Measurements - Done
 * Multiple clients - Done
 * Make so that the clients can see each others movement - Done
@@ -15,19 +19,19 @@
 * Emotes
 * Attacks
 * Special Abilities
-* Awards for winning (Rare items, more xp, more money,
+* Awards for winning (Rare items, more xp, more currency)
 
 /// SERVER & CLIENT
-* Client Login - In Progress
-* Client Register - In Progress 
-* Database Login - In Progress
-* Database Register - In Progress
-* Admin accounts
-* Lobby Search - In Progress
+* Client Login - Done
+* Client Register - Done 
+* Database Login - Done
+* Database Register - Done
+* Admin Accounts
+* Lobby Search - On Hold
 
 
 /// RANKING
-* The rank will be decided by the % of wins a player has, the higher the better.
+* Global ranking system
 
 /// ACHIEVMENTS
 * It's a tie! (Tie 5 games)
