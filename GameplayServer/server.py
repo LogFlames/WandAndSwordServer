@@ -117,6 +117,7 @@ while running:
             print('exit - close the server')
             print('kick-all - Kicks all clients from server')
             print('list-clients - Lists all clients connected to the server')
+            print('resend-names - Resends all names to connected clients')
             print(' ')
         elif line == 'exit':
             print('Attempting to close the server')
@@ -132,6 +133,8 @@ while running:
             for client in game.clients:
                 print(client.addr)
             print(' ')
+        elif line == 'resend-names':
+            game.resendNames()
         else:
             print('{} is a unknown command, type help for a list of commands.'.format(line))
 
@@ -151,7 +154,7 @@ while running:
             s.setblocking(0)
             s.settimeout(0.001)
 
-            print('Incomming connection from {}'.format(addr))
+            print('Incoming connection from {}'.format(addr))
 
     game.recvData()
 

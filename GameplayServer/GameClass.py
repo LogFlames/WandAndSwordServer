@@ -77,6 +77,9 @@ class GameClass:
                         s.connect(('192.168.10.171', 8060))
                     except:
                         print("Couldn't connect to database.")
+                        client.recvMessage.append(struct.pack('?', False))
+                        client.recver.append(0)
+                        continue
 
                     if unpacked_id == 2:
                         s.sendall(("l:" + name + ":" + password + "\n").encode("utf-8"))
@@ -90,11 +93,11 @@ class GameClass:
                         client.recver.append(0)
                         continue
 
-                    db_response = db_response.decode('utf-8').strip()
+                    db_response = struct.unpack('?', db_response)
                     success = False
-                    if db_response == '0':
+                    if not db_response:
                         success = False
-                    elif db_response == '1':
+                    elif db_response:
                         print('{}: successful login or account creation.'.format(name))
                         success = True
                         client.name = name
@@ -111,12 +114,20 @@ class GameClass:
                             data = struct.pack('i', 5) + (client2.name + '\x00').encode('utf-8')
                             client.recvMessage.append(data)
                             client.recver.append(0)
-                                
+                            
                     client.recvMessage.insert(0, struct.pack('?', success))
                     client.recver.insert(0, 0)
+
+                    for client2 in self.clients:
+                        print(client2.clientID)
+                        print(client2.recver)
+                        print(client2.recvMessage)
                 else:
-                    client.recvMessage.append(incoming)
-                    client.recver.append(1)
+                    for client2 in self.clients:
+                        if client.clientID == client2.clientID:
+                            continue
+                        client2.recvMessage.append(incoming)
+                        client2.recver.append(0)
 
     def sendData(self):
         for client in self.clients:
@@ -131,3 +142,12 @@ class GameClass:
                 del client.recvMessage[0]
                 if len(client.recver) > 0:
                     del client.recver[0]
+
+    def resendNames(self):
+        for client in self.clients:
+            for client2 in self.clients:
+                if client.clientID == client2.clientID:
+                    continue
+                data = struct.pack('i', 5) + (client2.name + '\x00').encode('utf-8')
+                client.recvMessage.append(data)
+                client.recver.append(0)
