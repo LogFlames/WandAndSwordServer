@@ -5,3 +5,4 @@
 4 = server to data base pull credentials request
 5 = username sharing
 6 = player penalty
+7 = login success
