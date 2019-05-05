@@ -26,10 +26,10 @@
 * Client Register - Done 
 * Database Login - Done
 * Database Register - Done
+* Clients recieve name - Done
 * Admin Accounts
 * Lobby Search - On Hold
-* Kick individual client
-
+* Kick individual client - Done
 
 /// RANKING
 * Global ranking system

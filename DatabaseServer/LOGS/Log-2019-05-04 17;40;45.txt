@@ -1,0 +1,17 @@
+ 
+Server is running on --> 192.168.10.171:8060
+ 
+Incomming connection from ('192.168.10.171', 53953)
+('192.168.10.171', 53953) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53962)
+('192.168.10.171', 53962) tried to login with mr ikea and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 54057)
+('192.168.10.171', 54057) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 54067)
+('192.168.10.171', 54067) tried to login with mr ikea and 202cb962ac59075b964b07152d234b70
+Result of login: True
+ 
+Server closed.

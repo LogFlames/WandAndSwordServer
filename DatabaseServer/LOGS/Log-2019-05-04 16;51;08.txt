@@ -1,0 +1,89 @@
+ 
+Server is running on --> 192.168.10.171:8060
+ 
+Incomming connection from ('192.168.10.171', 53364)
+('192.168.10.171', 53364) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53411)
+('192.168.10.171', 53411) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53435)
+('192.168.10.171', 53435) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53451)
+('192.168.10.171', 53451) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53455)
+('192.168.10.171', 53455) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53469)
+('192.168.10.171', 53469) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53495)
+('192.168.10.171', 53495) tried to login with mr ikea and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53503)
+('192.168.10.171', 53503) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53516)
+('192.168.10.171', 53516) tried to login with mr ikea and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53519)
+('192.168.10.171', 53519) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53531)
+('192.168.10.171', 53531) tried to login with ¨Log and eccbc87e4b5ce2fe28308fd9f2a7baf3
+Result of login: False
+Incomming connection from ('192.168.10.171', 53536)
+('192.168.10.171', 53536) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53539)
+('192.168.10.171', 53539) tried to login with mr ikea and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53541)
+('192.168.10.171', 53541) tried to login with mr ikea and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53553)
+('192.168.10.171', 53553) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53556)
+('192.168.10.171', 53556) tried to login with mr ikea and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53574)
+('192.168.10.171', 53574) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53578)
+('192.168.10.171', 53578) tried to login with mr ikea and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53588)
+('192.168.10.171', 53588) tried to login with mr ikea and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53595)
+('192.168.10.171', 53595) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53613)
+('192.168.10.171', 53613) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53666)
+('192.168.10.171', 53666) tried to login with mr ikea and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53667)
+('192.168.10.171', 53667) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53699)
+('192.168.10.171', 53699) tried to login with mr ikea and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53701)
+('192.168.10.171', 53701) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53745)
+('192.168.10.171', 53745) tried to login with mr ikea and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53748)
+('192.168.10.171', 53748) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 53827)
+('192.168.10.171', 53827) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+ 
+Server closed.

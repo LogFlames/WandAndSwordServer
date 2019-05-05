@@ -5,6 +5,7 @@ import threading
 import queue
 import time
 import struct
+import re
 
 from ClientClass import *
 from GameClass import *
@@ -116,6 +117,7 @@ while running:
             print('help - Show this menu')
             print('exit - close the server')
             print('kick-all - Kicks all clients from server')
+            print('kick-(id)(id)(id)(...) - Kick client of specified id. example "kick-(3)", "kick-(5)(7)"')
             print('list-clients - Lists all clients connected to the server')
             print('resend-names - Resends all names to connected clients')
             print(' ')
@@ -128,13 +130,21 @@ while running:
                 client.toBeRemoved = True
             print('Kicked all clients from server')
             print(' ')
+        elif line.startswith('kick-('):
+            ctkID = re.findall('\d+', line)
+            ctkID = list(map(int, ctkID))
+            game.kick_clients(ctkID)
         elif line == 'list-clients':
             print('Clients: ')
             for client in game.clients:
-                print(client.addr)
+                print('ID: {}, Addr: {}, Name: {}'.format(client.clientID, client.addr, client.name))
             print(' ')
         elif line == 'resend-names':
             game.resendNames()
+            print('Resent all name data to clients')
+            for client in game.clients:
+                print('ID: {}, Addr: {} ||| Name: {}'.format(client.clientID, client.addr, client.name))
+            print(' ')
         else:
             print('{} is a unknown command, type help for a list of commands.'.format(line))
 

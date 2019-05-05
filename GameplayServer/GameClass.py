@@ -23,6 +23,7 @@ class GameClass:
             if client.clientSocket == None or client.clientSocket.fileno() == -1 or client.toBeRemoved:
                 print('Removed {} from server due to server-side detect of disconnect or kick command'.format(client.addr))
                 client.toBeRemoved = True
+                client.clientSocket.close()
                 continue
 
             gotData = False
@@ -115,13 +116,11 @@ class GameClass:
                             client.recvMessage.append(data)
                             client.recver.append(0)
                             
+                    client.recvMessage.insert(0, 0.05)
+                    client.recver.insert(0, 2)
+
                     client.recvMessage.insert(0, struct.pack('?', success))
                     client.recver.insert(0, 0)
-
-                    for client2 in self.clients:
-                        print(client2.clientID)
-                        print(client2.recver)
-                        print(client2.recvMessage)
                 else:
                     for client2 in self.clients:
                         if client.clientID == client2.clientID:
@@ -131,17 +130,20 @@ class GameClass:
 
     def sendData(self):
         for client in self.clients:
-            if len(client.recvMessage) > 0:
-                if len(client.recver) == 0 or client.recver[0] == 0:
-                    client.sendBufferToClient(client.recvMessage[0])
-                else:
-                    for client2 in self.clients:
-                        if client.clientID == client2.clientID:
-                            continue
-                        client2.sendBufferToClient(client.recvMessage[0])
-                del client.recvMessage[0]
-                if len(client.recver) > 0:
-                    del client.recver[0]
+            if client.calcSleepTime():
+                if len(client.recvMessage) > 0:
+                    if len(client.recver) == 0 or client.recver[0] == 0:
+                        client.sendBufferToClient(client.recvMessage[0])
+                    elif client.recver[0] == 1:
+                        for client2 in self.clients:
+                            if client.clientID == client2.clientID:
+                                continue
+                            client2.sendBufferToClient(client.recvMessage[0])
+                    elif client.recver[0] == 2:
+                        client.setSleepTime(client.recvMessage[0])
+                    del client.recvMessage[0]
+                    if len(client.recver) > 0:
+                        del client.recver[0]
 
     def resendNames(self):
         for client in self.clients:
@@ -151,3 +153,9 @@ class GameClass:
                 data = struct.pack('i', 5) + (client2.name + '\x00').encode('utf-8')
                 client.recvMessage.append(data)
                 client.recver.append(0)
+
+    def kick_clients(self, clientIDs):
+        for client in self.clients:
+            if client.clientID in clientIDs:
+                client.toBeRemoved = True
+                client.clientSocket.close()

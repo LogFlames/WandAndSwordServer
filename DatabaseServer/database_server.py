@@ -74,7 +74,9 @@ def checkLogin(name, password):
 try:
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error:
-    print_gui_with_log("Failed to create initial socket. Exiting")
+    print_gui_with_log(" ")
+    print_gui_with_log("Failed to create initial socket. Exiting: {}".format(datetime.datetime.now()))
+    log_file.close()
     exit()
 
 def getIP():
@@ -106,6 +108,8 @@ serverSocket.settimeout(0.05)
 
 running = True
 
+print_gui_with_log("Server started: {}".format(datetime.datetime.now()))
+
 while running:
     screen.update()
     if reqExit():
@@ -127,12 +131,12 @@ while running:
                 client.close()
                 continue
         except:
-            client.sendall(("0" + "\n").encode('utf-8'))
+            client.sendall(struct.pack('?', False))
             client.close()
             continue
 
         if len(incoming.decode('utf-8').strip().split(":")) != 3:
-            client.sendall(("0" + "\n").encode('utf-8'))
+            client.sendall(struct.pack('?', False))
             client.close()
             continue
 
@@ -143,15 +147,15 @@ while running:
         if typ.startswith("c"):
             if addUser(name, pasw):
                 success = True
-                client.sendall(("1" + "\n").encode('utf-8'))
+                client.sendall(struct.pack('?', True))
             else:
-                client.sendall(("0" + "\n").encode('utf-8'))
+                client.sendall(struct.pack('?', False))
         elif typ.startswith("l"):
             if checkLogin(name, pasw):
                 success = True
-                client.sendall(("1" + "\n").encode('utf-8'))
+                client.sendall(struct.pack('?', True))
             else:
-                client.sendall(("0" + "\n").encode('utf-8'))
+                client.sendall(struct.pack('?', False))
         else:
             print_gui_with_log("{} tried to send invalid command: {}".format(addr, incoming))
         
@@ -160,8 +164,9 @@ while running:
 
         client.close()
 
+serverSocket.close()
+
 print_gui_with_log(" ")
-print_gui_with_log("Server closed.")
+print_gui_with_log("Server closed: {}".format(datetime.datetime.now()))
 
 log_file.close()
-serverSocket.close()
