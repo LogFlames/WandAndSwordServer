@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 
+import time
+
 class ClientClass:
     def __init__(self, clientID, connection, addr):
         self.clientID = clientID
         self.addr = addr
         self.clientSocket = connection
 
-        self.name = ""
+        self.name = " "
 
         self.toBeRemoved = False
 
         self.recvMessage = []
         self.recver = []
+
+        self.sleepTime = 0
 
     def sendToClient(self, msg):
         try:
@@ -26,3 +30,9 @@ class ClientClass:
             #print('Sent {} to {}'.format(buf, self.addr))
         except:
             print('Failed to send {} to {}'.format(buf, self.addr))
+
+    def setSleepTime(self, delay):
+        self.sleepTime = time.time() + delay
+
+    def calcSleepTime(self):
+        return self.sleepTime <= time.time()
