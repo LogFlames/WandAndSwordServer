@@ -1,0 +1,23 @@
+ 
+Server is running on --> 192.168.10.171:8060
+ 
+Server started: 2019-05-07 20:35:16.751907
+>>> user_info:mr ikea
+User info 'mr ikea': 
+[credentials]
+
+password = 40bd001563085fc35165329ea1ff5c5ecbdbbeef
+
+
+
+ 
+Incomming connection from ('192.168.10.171', 60443)
+('192.168.10.171', 60443) tried to  with Log and 202cb962ac59075b964b07152d234b70
+Result of login: False
+>>> check_file:Log
+Couldn't find userfile 'Log.ini' in database
+ 
+>>> exit
+ 
+ 
+Server closed: 2019-05-07 20:42:50.289834

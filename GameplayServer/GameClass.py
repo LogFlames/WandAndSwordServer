@@ -94,7 +94,7 @@ class GameClass:
                         client.recver.append(0)
                         continue
 
-                    db_response = struct.unpack('?', db_response)
+                    db_response = struct.unpack('?', db_response)[0]
                     success = False
                     if not db_response:
                         success = False
@@ -116,7 +116,7 @@ class GameClass:
                             client.recvMessage.append(data)
                             client.recver.append(0)
                             
-                    client.recvMessage.insert(0, 0.05)
+                    client.recvMessage.insert(0, 0.08)
                     client.recver.insert(0, 2)
 
                     client.recvMessage.insert(0, struct.pack('?', success))

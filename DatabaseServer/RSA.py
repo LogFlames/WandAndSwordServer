@@ -102,8 +102,19 @@ def decrypt(pk, ciphertext):
     return ''.join(plain)
 
 def generate_keypair_input():
-    p = int(input("Enter a prime number: "))
-    q = int(input("Enter another prime number: "))
+    primes = list(map(int, input("Please enter prime numbers separated by ',': ").split(",")))
+    
+    p = 1
+    q = 1
+
+    for index, prime in enumerate(primes):
+        if index != len(primes) - 1:
+            p *= prime
+        q *= prime
+    p += 1
+    q += 1
+
+    print("P: {}, Q: {}".format(p, q))
 
     public, private = generate_keypair(p, q)
     print("Your public key is {} and your private key is {}".format(public, private))
