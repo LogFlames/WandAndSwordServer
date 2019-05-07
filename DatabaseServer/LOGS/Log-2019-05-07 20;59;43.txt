@@ -1,0 +1,23 @@
+ 
+Server is running on --> 192.168.10.171:8060
+ 
+Server started: 2019-05-07 20:59:43.757313
+Incomming connection from ('192.168.10.171', 60870)
+('192.168.10.171', 60870) tried to create an account with LogFlames and a064ed8f80af7de495af059805df1880c209ee6ec90a9fd8e1efd7687b05147c
+Result of login: True
+>>> check_file:LogFlames
+Userfile 'LogFlames.ini' successfully found in database.
+ 
+>>> user_info:LogFlames
+User info 'LogFlames': 
+[credentials]
+
+password = a064ed8f80af7de495af059805df1880c209ee6ec90a9fd8e1efd7687b05147c
+
+
+
+ 
+>>> exit
+ 
+ 
+Server closed: 2019-05-07 21:02:19.244897

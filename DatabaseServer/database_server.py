@@ -7,6 +7,7 @@ import hashlib
 import os
 import configparser
 import datetime
+import hashlib
 
 from database_server_gui import *
 
@@ -181,6 +182,7 @@ while running:
         success = False
 
         typ, name, pasw = incoming.decode('utf-8').strip().split(":")
+        pasw = hashlib.sha256(pasw.encode('utf-8')).hexdigest()
 
         mess = ""
 
