@@ -10,21 +10,12 @@ import random
 import math
 
 '''
-Euclid's algorithm for determining the greatest common divisor
-Use iteration to make it faster for larger integers
-'''
-def gcd(a, b):
-    while b != 0:
-        a, b = b, a % b
-    return a
-
-'''
 Euclid's extended algorithm for finding the multiplicative inverse of two numbers
 '''
 def multiplicative_inverse(a, b):
-    """Returns a tuple (r, i, j) such that r = gcd(a, b) = ia + jb
+    """Returns a tuple (r, i, j) such that r = math.gcd(a, b) = ia + jb
     """
-    # r = gcd(a,b) i = multiplicitive inverse of a mod b
+    # r = math.gcd(a,b) i = multiplicitive inverse of a mod b
     #      or      j = multiplicitive inverse of b mod a
     # Neg return values for i or j are made positive mod b or a respectively
     # Iterateive Version is faster and uses much less stack space
@@ -58,6 +49,16 @@ def is_prime(num):
             return False
     return True
 
+def get_smallest_div(num):
+    if num < 2:
+        return 1
+    if num % 2 == 0:
+        return 2
+    for n in range(3, int(math.sqrt(num) + 1), 2):
+        if num % n == 0:
+            return n
+    return 1
+
 def generate_keypair(p, q):
     if not (is_prime(p) and is_prime(q)):
         raise ValueError('Both numbers must be prime.')
@@ -73,10 +74,10 @@ def generate_keypair(p, q):
     e = random.randrange(1, phi)
 
     #Use Euclid's Algorithm to verify that e and phi(n) are comprime
-    g = gcd(e, phi)
+    g = math.gcd(e, phi)
     while g != 1:
         e = random.randrange(1, phi)
-        g = gcd(e, phi)
+        g = math.gcd(e, phi)
 
     #Use Extended Euclid's Algorithm to generate the private key
     d = multiplicative_inverse(e, phi)
@@ -88,33 +89,43 @@ def generate_keypair(p, q):
 def encrypt(pk, plaintext):
     #Unpack the key into it's components
     key, n = pk
+
+    messageVal = ''
+
+    for char in plaintext:
+        sO = str(ord(char))
+        messageVal += '0' * (3 - len(sO)) + sO
+
+    messageVal = int("1" + messageVal)
+
+    cipher = pow(messageVal, key, n)
+
     #Convert each letter in the plaintext to numbers based on the character using a^b mod m
-    cipher = [pow(ord(char), key, n) for char in plaintext]
+    #cipher = [pow(ord(char), key, n) for char in plaintext]
     #Return the array of bytes
     return cipher
 
-def decrypt(pk, ciphertext):
+def decrypt(pk, messVal):
     #Unpack the key into its components
     key, n = pk
     #Generate the plaintext based on the ciphertext and key using a^b mod m
-    plain = [chr(pow(char, key, n)) for char in ciphertext]
+
+    messVal = str(pow(messVal, key, n))
+
+    plain = ''
+
+    messVal = str(messVal)[1:]
+    for n in range(0, len(messVal), 3):
+        plain += chr(int(messVal[n:n + 3]))
+
+    #plain = [chr(pow(char, key, n)) for char in ciphertext]
     #Return the array of bytes as a string
-    return ''.join(plain)
+    return plain
 
 def generate_keypair_input():
-    primes = list(map(int, input("Please enter prime numbers separated by ',': ").split(",")))
-    
-    p = 1
-    q = 1
-
-    for index, prime in enumerate(primes):
-        if index != len(primes) - 1:
-            p *= prime
-        q *= prime
-    p += 1
-    q += 1
-
-    print("P: {}, Q: {}".format(p, q))
+    p = int(input("Enter a prime number: "))
+    q = int(input("Enter a bigger prime number: "))
 
     public, private = generate_keypair(p, q)
+
     print("Your public key is {} and your private key is {}".format(public, private))
