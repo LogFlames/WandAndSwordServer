@@ -9,6 +9,20 @@ Part A - RSA Encryption
 import random
 import math
 
+lettersAlowed = list("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!#€%&/()[]{}<>.,:;-_+?@*|=£$êîéèôç^' ")
+
+def small_ord(char):
+    for index, ch in enumerate(lettersAlowed):
+        if char == ch:
+            return index + 1
+    return 1
+
+def small_chr(inex):
+    inex -= 1
+    if inex < 0 or inex >= len(lettersAlowed):
+        return lettersAlowed[0]
+    return lettersAlowed[inex]
+
 '''
 Euclid's extended algorithm for finding the multiplicative inverse of two numbers
 '''
@@ -59,11 +73,15 @@ def get_smallest_div(num):
             return n
     return 1
 
-def generate_keypair(p, q):
-    if not (is_prime(p) and is_prime(q)):
-        raise ValueError('Both numbers must be prime.')
-    elif p == q:
-        raise ValueError('p and q cannot be equal')
+def generate_keypair(length=1024, k=128):
+    a = -1
+    b = -1
+    while a == b:
+        a = generate_prime_number(length, k)
+        b = generate_prime_number(length, k)
+
+    p = min(a, b)
+    q = max(a, b)
     #n = pq
     n = p * q
 
@@ -93,10 +111,10 @@ def encrypt(pk, plaintext):
     messageVal = ''
 
     for char in plaintext:
-        sO = str(ord(char))
-        messageVal += '0' * (3 - len(sO)) + sO
+        sO = str(small_ord(char))
+        messageVal += '0' * (2 - len(sO)) + sO
 
-    messageVal = int("1" + messageVal)
+    messageVal = int(messageVal)
 
     cipher = pow(messageVal, key, n)
 
@@ -114,18 +132,75 @@ def decrypt(pk, messVal):
 
     plain = ''
 
-    messVal = str(messVal)[1:]
-    for n in range(0, len(messVal), 3):
-        plain += chr(int(messVal[n:n + 3]))
+    startInd = 0
+    if len(messVal) % 2 == 1:
+        plain += small_chr(int(messVal[0]))
+        startInd = 1
+
+    for n in range(startInd, len(messVal), 2):
+        plain += small_chr(int(messVal[n:n + 2]))
 
     #plain = [chr(pow(char, key, n)) for char in ciphertext]
     #Return the array of bytes as a string
     return plain
 
-def generate_keypair_input():
-    p = int(input("Enter a prime number: "))
-    q = int(input("Enter a bigger prime number: "))
+def is_prime_aprox(n, k=128):
+    """ Test if a number is prime
+        Args:
+            n -- int -- the number to test
+            k -- int -- the number of tests to do
+        return True if n is prime
+    """
+    # Test if n is not even.
+    # But care, 2 is prime !
+    if n == 2 or n == 3:
+        return True
+    if n <= 1 or n % 2 == 0:
+        return False
+    # find r and s
+    s = 0
+    r = n - 1
+    while r & 1 == 0:
+        s += 1
+        r //= 2
+    # do k tests
+    for _ in range(k):
+        a = random.randrange(2, n - 1)
+        x = pow(a, r, n)
+        if x != 1 and x != n - 1:
+            j = 1
+            while j < s and x != n - 1:
+                x = pow(x, 2, n)
+                if x == 1:
+                    return False
+                j += 1
+            if x != n - 1:
+                return False
+    return True
 
-    public, private = generate_keypair(p, q)
+def generate_prime_candidate(length):
+    """ Generate an odd integer randomly
+        Args:
+            length -- int -- the length of the number to generate, in bits
+        return a integer
+    """
+    # generate random bits
+    p = random.getrandbits(length)
+    # apply a mask to set MSB and LSB to 1
+    p |= (1 << length - 1) | 1
+    return p
 
-    print("Your public key is {} and your private key is {}".format(public, private))
+def generate_prime_number(length=1024, k=128):
+    """ Generate a prime
+        Args:
+            length -- int -- length of the prime to generate, in          bits
+        return a prime
+    """
+    p = 4
+    # keep generating while the primality test fail
+    while not is_prime_aprox(p, k):
+        p = generate_prime_candidate(length)
+    return p
+
+# Only used for testing when in terminal
+# puk, prk = generate_keypair(512)

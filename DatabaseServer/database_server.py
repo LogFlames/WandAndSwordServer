@@ -74,14 +74,6 @@ def getUserInfo(name):
             for line in f:
                 yield line
 
-try:
-    serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-except socket.error:
-    print_gui_with_log(" ")
-    print_gui_with_log("Failed to create initial socket. Exiting: {}".format(datetime.datetime.now()))
-    log_file.close()
-    exit()
-
 def getIP():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
@@ -94,20 +86,41 @@ def getIP():
 
     return s.getsockname()[0]
 
-host = getIP()
+def bindServer(hst="ip"):
+    global serverSocket
 
-port = 8060
-try:
-    serverSocket.bind((host, port))
-    print_gui_with_log(' ')
-    print_gui_with_log('Server is running on --> {}:{}'.format(host, str(port)))
-    print_gui_with_log(' ')
-except:
-    print_gui_with_log('Port {} is already in use on the host machine, free the port and try again.'.format(str(port)))
+    if hst == "l" or hst == "localhost":
+        host = "localhost"
+    elif hst == "ip":
+        host = getIP()
+    else:
+        print_gui_with_log("Unknown requested serverbind Mode: {}".format(hst))
+        return
 
-serverSocket.listen(5)
-serverSocket.setblocking(0)
-serverSocket.settimeout(0.05)
+    try:
+        serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    except socket.error:
+        print_gui_with_log(" ")
+        print_gui_with_log("Failed to create initial socket. Exiting: {}".format(datetime.datetime.now()))
+        log_file.close()
+        exit()
+
+    port = 8060
+
+    try:
+        serverSocket.bind((host, port))
+        print_gui_with_log(' ')
+        print_gui_with_log('Server is running on --> {}:{}'.format(host, str(port)))
+        print_gui_with_log(' ')
+    except:
+        print_gui_with_log('Port {} is already in use on the host machine, free the port and try again.'.format(str(port)))
+
+    serverSocket.listen(5)
+    serverSocket.setblocking(0)
+    serverSocket.settimeout(0.05)
+
+
+bindServer()
 
 running = True
 
@@ -123,6 +136,7 @@ while running:
             print_gui("delete_user:(name) - Deletes a user from the system. Example: 'delete_user:Log'")
             print_gui("check_file:(name) - Check if file exists. Example: 'check_file:Log'")
             print_gui("user_info:(name) - Prints all info about a user. Example: 'check_user:Log'")
+            print_gui("rebind_server:(mode) - Reopenes the server in new mode. Avaiable modes: [ip, localhost]")
             print_gui(" ")
         elif command == "exit":
             print_gui_with_log(">>> {}".format(command))
@@ -150,6 +164,10 @@ while running:
             for line in getUserInfo(command):
                 print_gui_with_log(line)
             print_gui_with_log(" ")
+        elif command.startswith("rebind_server:"):
+            print_gui_with_log(">>> {}".format(command))
+            command = command[14:]
+            bindServer(command)
         else:
             print_gui("Unknown command, type help to open available commands.")
 
