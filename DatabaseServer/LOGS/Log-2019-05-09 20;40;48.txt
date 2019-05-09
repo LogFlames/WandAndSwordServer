@@ -1,0 +1,14 @@
+ 
+Server is running on --> 192.168.10.171:8060
+ 
+Server started: 2019-05-09 20:40:48.630002
+Incomming connection from ('192.168.10.171', 49407)
+('192.168.10.171', 49407) tried to create an account with mr ikea and 65829e542dd151f443cc997270c61e78c042a82d687cc13844bf2c1813714600
+Result of login: True
+>>> check_file:mr ikea
+Userfile 'mr ikea.ini' successfully found in database.
+ 
+>>> exit
+ 
+ 
+Server closed: 2019-05-09 20:41:57.046977

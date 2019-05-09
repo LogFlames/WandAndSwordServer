@@ -1,0 +1,12 @@
+ 
+Server is running on --> 192.168.10.171:8060
+ 
+Server started: 2019-05-05 20:15:06.803426
+Incomming connection from ('192.168.10.171', 52152)
+('192.168.10.171', 52152) tried to login with Log and 202cb962ac59075b964b07152d234b70
+Result of login: True
+Incomming connection from ('192.168.10.171', 52627)
+('192.168.10.171', 52627) tried to login with mr ikea and 202cb962ac59075b964b07152d234b70
+Result of login: True
+ 
+Server closed: 2019-05-05 20:16:49.975820

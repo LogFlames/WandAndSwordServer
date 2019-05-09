@@ -1,0 +1,17 @@
+ 
+Server is running on --> 192.168.10.171:8060
+ 
+Server started: 2019-05-07 20:32:23.755960
+>>> check_file:Log
+Couldn't find userfile 'og.ini' in database
+ 
+>>> check_file:mr ikea
+Couldn't find userfile 'r ikea.ini' in database
+ 
+>>> check_file: mr ikea
+Userfile 'mr ikea.ini' successfully found in database.
+ 
+>>> exit
+ 
+ 
+Server closed: 2019-05-07 20:32:53.569532

@@ -1,0 +1,11 @@
+ 
+Server is running on --> 192.168.10.171:8060
+ 
+Server started: 2019-05-07 20:58:21.987527
+Incomming connection from ('192.168.10.171', 60838)
+('192.168.10.171', 60838) tried to create an account with 21e49eb2b299c9f7503a1236ecc80e1c51dd9e07989a3c12283df174067cc1aa and 202cb962ac59075b964b07152d234b70
+Result of login: True
+>>> exit
+ 
+ 
+Server closed: 2019-05-07 20:58:56.899132

@@ -7,10 +7,14 @@ import sys
 terminal = None
 screen = None
 
-reqE = False
+commands = []
 
-def reqExit():
-    return reqE
+def getCommands():
+    global commands
+
+    temp = commands
+    commands = []
+    return temp
 
 def main_screen():
     global terminal
@@ -79,9 +83,8 @@ class Application(Frame):
         self.text.insert("end", "\n")
         command = self.text.get("end-of-prompt", "end-1c")
         command = command.strip()
-        if command == "exit":
-            global reqE
-            reqE = True
+        
+        commands.append(command)
         #self.text.insert("end", "output of the command '%s'...!" % command)
         self.text.see("end")
         self.insert_prompt()

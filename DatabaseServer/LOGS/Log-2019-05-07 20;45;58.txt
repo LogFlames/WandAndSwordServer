@@ -1,0 +1,11 @@
+ 
+Server is running on --> 192.168.10.171:8060
+ 
+Server started: 2019-05-07 20:45:58.495473
+Incomming connection from ('192.168.10.171', 60534)
+('192.168.10.171', 60534) tried to login to an account with Log and 202cb962ac59075b964b07152d234b70
+Result of login: False
+>>> exit
+ 
+ 
+Server closed: 2019-05-07 20:47:08.554477

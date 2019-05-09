@@ -133,7 +133,10 @@ while running:
         elif line.startswith('kick-('):
             ctkID = re.findall('\d+', line)
             ctkID = list(map(int, ctkID))
-            game.kick_clients(ctkID)
+            if game.kick_clients(ctkID):
+                print('Kicked requested clients')
+            else:
+                print("Couldn't find any clients with the requested IDs.")
         elif line == 'list-clients':
             print('Clients: ')
             for client in game.clients:

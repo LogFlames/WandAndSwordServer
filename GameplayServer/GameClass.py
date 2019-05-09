@@ -83,9 +83,9 @@ class GameClass:
                         continue
 
                     if unpacked_id == 2:
-                        s.sendall(("l:" + name + ":" + password + "\n").encode("utf-8"))
+                        s.sendall(("l" + "\x00" + name + "\x00" + password + "\n").encode("utf-8"))
                     elif unpacked_id == 3:
-                        s.sendall(("c:" + name + ":" + password + "\n").encode("utf-8"))
+                        s.sendall(("c" + "\x00" + name + "\x00" + password + "\n").encode("utf-8"))
                     
                     try:
                         db_response = s.recv(32)
@@ -94,7 +94,7 @@ class GameClass:
                         client.recver.append(0)
                         continue
 
-                    db_response = struct.unpack('?', db_response)
+                    db_response = struct.unpack('?', db_response)[0]
                     success = False
                     if not db_response:
                         success = False
@@ -116,7 +116,7 @@ class GameClass:
                             client.recvMessage.append(data)
                             client.recver.append(0)
                             
-                    client.recvMessage.insert(0, 0.05)
+                    client.recvMessage.insert(0, 0.08)
                     client.recver.insert(0, 2)
 
                     client.recvMessage.insert(0, struct.pack('?', success))
@@ -155,7 +155,10 @@ class GameClass:
                 client.recver.append(0)
 
     def kick_clients(self, clientIDs):
+        foundC = False
         for client in self.clients:
             if client.clientID in clientIDs:
                 client.toBeRemoved = True
                 client.clientSocket.close()
+                foundC = True
+        return foundC
