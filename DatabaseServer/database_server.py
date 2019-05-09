@@ -127,6 +127,7 @@ running = True
 print_gui_with_log("Server started: {}".format(datetime.datetime.now()))
 
 while running:
+    update_computer_info()
     screen.update()
     for command in getCommands():
         if command == "help" or command == "?":
@@ -159,11 +160,14 @@ while running:
             print_gui_with_log(" ")
         elif command.startswith("user_info:"):
             print_gui_with_log(">>> {}".format(command))
-            command = command[10:]
-            print_gui_with_log("User info '{}': ".format(command))
-            for line in getUserInfo(command):
-                print_gui_with_log(line)
-            print_gui_with_log(" ")
+            if checkFile(command):
+                command = command[10:]
+                print_gui_with_log("User info '{}': ".format(command))
+                for line in getUserInfo(command):
+                    print_gui_with_log(line)
+                print_gui_with_log(" ")
+            else:
+                print_gui_with_log("Couldn't find userfile '{}'".format(command))
         elif command.startswith("rebind_server:"):
             print_gui_with_log(">>> {}".format(command))
             command = command[14:]

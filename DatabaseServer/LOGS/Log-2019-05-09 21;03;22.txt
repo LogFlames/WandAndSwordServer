@@ -1,0 +1,32 @@
+ 
+Server is running on --> 192.168.10.171:8060
+ 
+Server started: 2019-05-09 21:03:22.096509
+>>> check_file:mr ikea
+Userfile 'mr ikea.ini' successfully found in database.
+ 
+>>> user_info:mr ikea
+User info 'mr ikea': 
+[credentials]
+
+password = 65829e542dd151f443cc997270c61e78c042a82d687cc13844bf2c1813714600
+
+
+
+ 
+>>> user_info:Logg
+User info 'Logg': 
+ 
+>>> user_info:Log
+User info 'Log': 
+[credentials]
+
+password = 65829e542dd151f443cc997270c61e78c042a82d687cc13844bf2c1813714600
+
+
+
+ 
+>>> exit
+ 
+ 
+Server closed: 2019-05-09 21:04:35.505836
