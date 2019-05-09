@@ -185,21 +185,24 @@ while running:
             incoming = client.recv(1024)
 
             if len(incoming) == 0:
+                print_gui_with_log("{}'s recieved message was not readable.".format(addr))
                 client.close()
                 continue
         except:
+            print_gui_with_log("{} didn't send any recievable message.".format(addr))
             client.sendall(struct.pack('?', False))
             client.close()
             continue
 
-        if len(incoming.decode('utf-8').strip().split(":")) != 3:
+        if len(incoming.decode('utf-8').strip().split("\x00")) != 3:
+            print_gui_with_log("{} didn't send a correctly formated message.".format(addr))
             client.sendall(struct.pack('?', False))
             client.close()
             continue
 
         success = False
 
-        typ, name, pasw = incoming.decode('utf-8').strip().split(":")
+        typ, name, pasw = incoming.decode('utf-8').strip().split("\x00")
         pasw = hashlib.sha256(pasw.encode('utf-8')).hexdigest()
 
         mess = ""

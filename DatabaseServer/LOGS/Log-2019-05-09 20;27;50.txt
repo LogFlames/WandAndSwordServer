@@ -1,0 +1,10 @@
+ 
+Server is running on --> 192.168.10.171:8060
+ 
+Server started: 2019-05-09 20:27:50.438810
+Incomming connection from ('192.168.10.171', 65316)
+Incomming connection from ('192.168.10.171', 65343)
+>>> exit
+ 
+ 
+Server closed: 2019-05-09 20:29:32.522410
