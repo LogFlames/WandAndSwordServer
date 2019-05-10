@@ -127,6 +127,10 @@ running = True
 print_gui_with_log("Server started: {}".format(datetime.datetime.now()))
 
 while running:
+    if reqExitFunc():
+        print_gui_with_log("Exiting program, window closed requested.")
+        running = False
+        continue
     update_computer_info()
     screen.update()
     for command in getCommands():

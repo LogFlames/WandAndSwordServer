@@ -18,12 +18,21 @@ RAM_usage_left_string_var = None
 
 commands = []
 
+reqExit = False
+
+def reqExitFunc():
+    return reqExit
+
 def getCommands():
     global commands
 
     temp = commands
     commands = []
     return temp
+
+def on_exit():
+    global reqExit
+    reqExit = True
 
 def main_screen():
     global terminal
@@ -41,6 +50,8 @@ def main_screen():
     screen.geometry("900x700")
     screen.resizable(False, False)
     screen.title("Wand And Sword Database Manager 1.0")
+    
+    screen.protocol("WM_DELETE_WINDOW", on_exit)
 
     left_frame = Frame(screen, bg='white', width=400, height=700)
     right_frame = Frame(screen, bg='white', width=500, height=700)
@@ -59,18 +70,22 @@ def main_screen():
     RAM_usage_percent_string_var = StringVar(right_frame)
     RAM_usage_left_string_var = StringVar(right_frame)
 
-    CPU_percent_label = Label(right_frame, textvariable=CPU_percent_string_var)
-    RAM_usage_percent_label = Label(right_frame, textvariable=RAM_usage_percent_string_var)
-    RAM_usage_left_label = Label(right_frame, textvariable=RAM_usage_left_string_var)
+    CPU_percent_label = Label(right_frame, textvariable=CPU_percent_string_var, width=50)
+    RAM_usage_percent_label = Label(right_frame, textvariable=RAM_usage_percent_string_var, width=50)
+    RAM_usage_left_label = Label(right_frame, textvariable=RAM_usage_left_string_var, width=50)
 
+    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=50, height=2).pack()
     CPU_percent_label.pack()
+    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=50, height=2).pack()
     RAM_usage_percent_label.pack()
+    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=50, height=2).pack()
     RAM_usage_left_label.pack()
+    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=50, height=2).pack()
 
 def update_computer_info():
     CPU_percent_string_var.set("CPU Usage: {}%".format(psutil.cpu_percent()))
     RAM_usage_percent_string_var.set("RAM Usage: {}%".format(psutil.virtual_memory().percent))
-    RAM_usage_left_string_var.set("RAM Left: {}MB/{}MB".format(psutil.virtual_memory().free >> 20, psutil.virtual_memory().total >> 20))
+    RAM_usage_left_string_var.set("RAM Remeaining: {}MB/{}MB".format(psutil.virtual_memory().free >> 20, psutil.virtual_memory().total >> 20))
 
 def print_gui(msg):
     terminal.addText(msg)

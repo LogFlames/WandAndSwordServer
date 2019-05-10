@@ -1,6 +1,0 @@
- 
-Server is running on --> 192.168.10.171:8060
- 
-Incomming connection from ('192.168.10.171', 51436)
-('192.168.10.171', 51436) tried to login with Log and 202cb962ac59075b964b07152d234b70
-Result of login: True

@@ -1,8 +1,0 @@
- 
-Server is running on --> 192.168.10.171:8060
- 
-Server started: 2019-05-09 20:44:26.152341
->>> exit
- 
- 
-Server closed: 2019-05-09 20:44:52.925477
