@@ -59,6 +59,9 @@ class GameClass:
                 # register 3
                 # database and server 4
                 # usernames 5
+
+                if self.debug:
+                    self.prints.append("Recv: {} from {}".format(incoming, client.addr))
                 
                 unpacked_id = struct.unpack('B', incoming[:1])[0]
                 if unpacked_id == 0:
