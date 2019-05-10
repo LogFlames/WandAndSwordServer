@@ -10,6 +10,10 @@ class GameClass:
     def __init__(self):
         self.clients = []
 
+        self.debug = False
+
+        self.prints = []
+
     def addClient(self, client):
         self.clients.append(client)
 
@@ -21,7 +25,7 @@ class GameClass:
     def recvData(self):
         for client in self.clients:
             if client.clientSocket == None or client.clientSocket.fileno() == -1 or client.toBeRemoved:
-                print('Removed {} from server due to server-side detect of disconnect or kick command'.format(client.addr))
+                self.prints.append('Removed {} from server due to server-side detect of disconnect or kick command'.format(client.addr))
                 client.toBeRemoved = True
                 client.clientSocket.close()
                 continue
@@ -31,7 +35,7 @@ class GameClass:
                 incoming = client.clientSocket.recv(1024)
 
                 if len(incoming) == 0:
-                    print('Kicked {} from the server'.format(client.addr))
+                    self.prints.append('Kicked {} from the server'.format(client.addr))
                     client.name = ' '
                     for client2 in self.clients:
                         if client.clientID == client2.clientID:
@@ -77,7 +81,7 @@ class GameClass:
                     try:
                         s.connect(('192.168.10.171', 8060))
                     except:
-                        print("Couldn't connect to database.")
+                        self.prints.append("Couldn't connect to database.")
                         client.recvMessage.append(struct.pack('?', False))
                         client.recver.append(0)
                         continue
@@ -99,7 +103,7 @@ class GameClass:
                     if not db_response:
                         success = False
                     elif db_response:
-                        print('{}: successful login or account creation.'.format(name))
+                        self.prints.append('{}: successful login or account creation.'.format(name))
                         success = True
                         client.name = name
 
@@ -162,3 +166,12 @@ class GameClass:
                 client.clientSocket.close()
                 foundC = True
         return foundC
+
+    def update_clients_debug(self):
+        for client in self.clients:
+            client.debug = self.debug
+
+    def update_print_request(self):
+        for client in self.clients:
+            self.prints += client.prints
+            client.prints = []

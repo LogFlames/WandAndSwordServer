@@ -30,6 +30,9 @@
 * Admin Accounts
 * Lobby Search - On Hold
 * Kick individual client - Done
+* Add logs to gameplay server - Done
+* Restart log file once per timeinterval (database)
+* Restart log file once per timeinterval (gameplay)
 
 /// RANKING
 * Global ranking system

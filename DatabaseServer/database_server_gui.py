@@ -5,7 +5,7 @@ import time
 import sys
 import psutil
 
-
+cpu = None
 
 terminal = None
 screen = None
@@ -27,6 +27,8 @@ reqExit = False
 usingTemp = False
 
 def setup_temp():
+    global cpu
+
     try:
         from gpiozero import CPUTemperature
         usingTemp = True
@@ -72,8 +74,10 @@ def main_screen():
     
     screen.protocol("WM_DELETE_WINDOW", on_exit)
 
-    left_frame = Frame(screen, bg='white', width=400, height=700)
-    right_frame = Frame(screen, bg='white', width=500, height=700)
+    left_frame = Frame(screen, bg='white', width=600, height=700)
+    right_frame = Frame(screen, bg='white', width=300, height=700)
+
+    labelWidth = 40
 
     screen.grid_rowconfigure(1, weight=1)
     screen.grid_columnconfigure(0, weight=1)
@@ -86,24 +90,24 @@ def main_screen():
     Application(left_frame, "input").pack()
 
     CPU_percent_string_var = StringVar(right_frame)
+    CPU_temp_string_var = StringVar(right_frame)
     RAM_usage_percent_string_var = StringVar(right_frame)
     RAM_usage_left_string_var = StringVar(right_frame)
-    CPU_temp_string_var = StringVar(right_frame)
 
-    CPU_percent_label = Label(right_frame, textvariable=CPU_percent_string_var, width=50)
-    RAM_usage_percent_label = Label(right_frame, textvariable=RAM_usage_percent_string_var, width=50)
-    RAM_usage_left_label = Label(right_frame, textvariable=RAM_usage_left_string_var, width=50)
-    CPU_temp_label = Label(right_frame, textvariable=CPU_temp_string_var, width=50)
+    CPU_percent_label = Label(right_frame, textvariable=CPU_percent_string_var, width=labelWidth)
+    CPU_temp_label = Label(right_frame, textvariable=CPU_temp_string_var, width=labelWidth)
+    RAM_usage_percent_label = Label(right_frame, textvariable=RAM_usage_percent_string_var, width=labelWidth)
+    RAM_usage_left_label = Label(right_frame, textvariable=RAM_usage_left_string_var, width=labelWidth)
 
-    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=50, height=2).pack()
+    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=labelWidth, height=2).pack()
     CPU_percent_label.pack()
-    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=50, height=2).pack()
-    RAM_usage_percent_label.pack()
-    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=50, height=2).pack()
-    RAM_usage_left_label.pack()
-    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=50, height=2).pack()
+    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=labelWidth, height=2).pack()
     CPU_temp_label.pack()
-    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=50, height=2).pack()
+    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=labelWidth, height=2).pack()
+    RAM_usage_percent_label.pack()
+    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=labelWidth, height=2).pack()
+    RAM_usage_left_label.pack()
+    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=labelWidth, height=2).pack()
 
     setup_temp()
 

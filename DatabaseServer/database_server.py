@@ -22,7 +22,7 @@ path_to_logs = os.path.join(path_to_script, LOG_FILES)
 os.makedirs(path_to_users, exist_ok=True)
 os.makedirs(path_to_logs, exist_ok=True)
 
-log_file = open(os.path.join(path_to_logs, "Log-{}.txt".format(str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
+log_file = open(os.path.join(path_to_logs, "Log-database-server-{}.txt".format(str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
 
 def print_gui_with_log(msg):
     print_gui(msg)

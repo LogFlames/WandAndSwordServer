@@ -6,14 +6,30 @@ import queue
 import time
 import struct
 import re
+import os
+import datetime
 
 from ClientClass import *
 from GameClass import *
 
+LOG_FILES = "LOGS"
+
+path_to_script = os.path.dirname(__file__)
+path_to_logs = os.path.join(path_to_script, LOG_FILES)
+
+os.makedirs(path_to_logs, exist_ok=True)
+
+log_file = open(os.path.join(path_to_logs, "Log-gameplay-server-{}.txt".format(str(datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
+
+def print_log(msg):
+    print(msg)
+    log_file.write(msg + "\n")
+
 try:
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error:
-    print("Failed to create initial socket. Exiting")
+    print_log("Failed to create initial socket. Exiting")
+    log_file.close()
     exit()
 
 def getIP():
@@ -21,9 +37,9 @@ def getIP():
     try:
         s.connect(('8.8.8.8', 80))
     except:
-        print('    No internet connection.')
-        print('    Try reconnection and restarting the server')
-        print("    Launching into default host: 'localhost'")
+        print_log('    No internet connection.')
+        print_log('    Try reconnection and restarting the server')
+        print_log("    Launching into default host: 'localhost'")
         return 'localhost'
 
     return s.getsockname()[0]
@@ -34,7 +50,7 @@ threadOpen = False
 def read_kbd_input(inputQueue):
     global threadOpen
 
-    print('    Terminal ready for keyboard input')
+    print_log('    Terminal ready for keyboard input')
     threadOpen = True
     inputQueue.put('help')
     while runningInputThread:
@@ -47,14 +63,14 @@ while not hostChosen:
     host = input("Use host-machine ip or localhost? (ip <---> localhost): ")
     if host == "ip" or host == 'i':
         host = getIP()
-        print('    Host ip set to: {}'.format(str(host)))
+        print_log('    Host ip set to: {}'.format(str(host)))
         hostChosen = True
     elif host == 'localhost' or host == 'l':
         host = 'localhost'
-        print('    Host is hosted only on local machine')
+        print_log('    Host is hosted only on local machine')
         hostChosen = True
     else:
-        print("    Option '{}' isn't known by the program, please try again.".format(host))
+        print_log("    Option '{}' isn't known by the program, please try again.".format(host))
 
 """
 portChosen = False
@@ -63,23 +79,23 @@ while not portChosen:
     try:
         port = int(port_str)
     except:
-        print("    The input given couldn't be converted into a number, please only type whole numeric values.")
+        print_log("    The input given couldn't be converted into a number, please only type whole numeric values.")
         continue
     try:
         serverSocket.bind((host, port))
-        print('        Server is running on --> {}:{}'.format(host, port))
+        print_log('        Server is running on --> {}:{}'.format(host, port))
         portChosen = True
     except:
-        print('    Port {} is already in use on the host machine'.format(port))
+        print_log('    Port {} is already in use on the host machine'.format(port))
 """
 
 try:
     serverSocket.bind((host, 8059))
-    print(' ')
-    print('        Server is running on --> {}:{}'.format(host, '8059'))
-    print(' ')
+    print_log(' ')
+    print_log('        Server is running on --> {}:{}'.format(host, '8059'))
+    print_log(' ')
 except:
-    print('    Port {} is already in use on the host machine, free the port and try again.'.format('8059'))
+    print_log('    Port {} is already in use on the host machine, free the port and try again.'.format('8059'))
 
 playerCap = 2
 while playerCap == -1:
@@ -89,7 +105,7 @@ while playerCap == -1:
         if playerCap == -1:
             break
     except:
-        print("{} isn't a whole numeric value".format(playerCap_str))
+        print_log("{} isn't a whole numeric value".format(playerCap_str))
 
 game = GameClass()
 clientID = 0
@@ -98,58 +114,74 @@ serverSocket.listen(5)
 serverSocket.setblocking(0)
 serverSocket.settimeout(0.001)
 
+debug = False
+
 running = True
 
 inputQueue = queue.Queue()
 
-print('    Starting input thread')
+print_log('    Debug is currently set to DISABLED')
+
+print_log('    Starting input thread')
 inputThread = threading.Thread(target=read_kbd_input, args=(inputQueue,), daemon=True)
 inputThread.start()
-print('    Input thread started')
+print_log('    Input thread started')
 
-print('    Starting main server loop')
-print(' ')
+print_log('    Starting main server loop')
+print_log(' ')
 while running:
     if inputQueue.qsize() > 0:
         line = inputQueue.get().strip()
+        print_log(">>> " + line)
         if line == 'help' or line == '?':
-            print('Help menu:')
-            print('help - Show this menu')
-            print('exit - close the server')
-            print('kick-all - Kicks all clients from server')
-            print('kick-(id)(id)(id)(...) - Kick client of specified id. example "kick-(3)", "kick-(5)(7)"')
-            print('list-clients - Lists all clients connected to the server')
-            print('resend-names - Resends all names to connected clients')
-            print(' ')
+            print_log('Help menu:')
+            print_log('help - Show this menu')
+            print_log('exit - close the server')
+            print_log('kick-all - Kicks all clients from server')
+            print_log('kick-(id)(id)(id)(...) - Kick client of specified id. example "kick-(3)", "kick-(5)(7)"')
+            print_log('list-clients - Lists all clients connected to the server')
+            print_log('resend-names - Resends all names to connected clients')
+            print_log('debug - enable/disable debug mode.')
+            print_log(' ')
         elif line == 'exit':
-            print('Attempting to close the server')
+            print_log('Attempting to close the server')
             running = False
         elif line == 'kick-all':
             for client in game.clients:
                 client.clientSocket.close()
                 client.toBeRemoved = True
-            print('Kicked all clients from server')
-            print(' ')
+            print_log('Kicked all clients from server')
+            print_log(' ')
         elif line.startswith('kick-('):
             ctkID = re.findall('\d+', line)
             ctkID = list(map(int, ctkID))
             if game.kick_clients(ctkID):
-                print('Kicked requested clients')
+                print_log('Kicked requested clients')
             else:
-                print("Couldn't find any clients with the requested IDs.")
+                print_log("Couldn't find any clients with the requested IDs.")
         elif line == 'list-clients':
-            print('Clients: ')
+            print_log('Clients: ')
             for client in game.clients:
-                print('ID: {}, Addr: {}, Name: {}'.format(client.clientID, client.addr, client.name))
-            print(' ')
+                print_log('ID: {}, Addr: {}, Name: {}'.format(client.clientID, client.addr, client.name))
+            print_log(' ')
         elif line == 'resend-names':
             game.resendNames()
-            print('Resent all name data to clients')
+            print_log('Resent all name data to clients')
             for client in game.clients:
-                print('ID: {}, Addr: {} ||| Name: {}'.format(client.clientID, client.addr, client.name))
-            print(' ')
+                print_log('ID: {}, Addr: {} ||| Name: {}'.format(client.clientID, client.addr, client.name))
+            print_log(' ')
+        elif line == 'debug':
+            debug = not debug
+            game.debug = debug
+            game.update_clients_debug()
+            if debug:
+                status = "ENABLED"
+            else:
+                status = "DISABLED"
+
+            print_log('Debug is {}'.format(status))
         else:
-            print('{} is a unknown command, type help for a list of commands.'.format(line))
+            print_log('{} is a unknown command, type help for a list of commands.'.format(line))
 
     try:
         s, addr = serverSocket.accept()
@@ -158,16 +190,22 @@ while running:
 
     if s:
         if playerCap != -1 and len(game.clients) >= playerCap:
-            print('Kicked {} from the server, already {}/{} players online'.format(addr, str(playerCap), str(playerCap)))
+            print_log('Kicked {} from the server, already {}/{} players online'.format(addr, str(playerCap), str(playerCap)))
             s.close()
         else:
             clientID += 1
-            game.addClient(ClientClass(clientID, s, addr))
+            game.addClient(ClientClass(clientID, s, addr, debug))
 
             s.setblocking(0)
             s.settimeout(0.001)
 
-            print('Incoming connection from {}'.format(addr))
+            print_log('Incoming connection from {}'.format(addr))
+
+    game.update_print_request()
+
+    for msg in game.prints:
+        print_log(msg)
+    game.prints = []
 
     game.recvData()
 
@@ -175,13 +213,20 @@ while running:
 
     game.sendData()
 
-print('        Attempting to close down serversocket')
+print_log('        Attempting to close down serversocket')
 serverSocket.close()
-print('        Serversocket closed')
-print('        Closing down input thread')
+print_log('        Serversocket closed')
+print_log(' ')
+print_log('        Closing down input thread')
 runningInputThread = False
-print('    Press ENTER to ensure safe closedown of input thread...')
+print_log('    Press ENTER to ensure safe closedown of input thread...')
 while threadOpen:
     time.sleep(0.5)
-print('        Thread closed properly')
+print_log('        Thread closed properly')
+
+print_log('    Attempting to close down log file')
+log_file.close()
+print('    LogFile closed down properly')
+
+print(' ----- ----- ----- ----- ----- ----- ----- ')
 print('        Server closed down properly')

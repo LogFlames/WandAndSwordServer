@@ -3,7 +3,7 @@
 import time
 
 class ClientClass:
-    def __init__(self, clientID, connection, addr):
+    def __init__(self, clientID, connection, addr, debug):
         self.clientID = clientID
         self.addr = addr
         self.clientSocket = connection
@@ -17,19 +17,25 @@ class ClientClass:
 
         self.sleepTime = 0
 
+        self.debug = debug
+
+        self.prints = []
+
     def sendToClient(self, msg):
         try:
             self.clientSocket.sendall((msg + '\n').encode('utf-8'))
-            #print('Sent {} to {}'.format(msg, self.addr))
+            if self.debug:
+                self.prints.append('Sent {} to {}'.format(msg, self.addr))
         except:
-            print('Failed to send {} to {}'.format(msg, self.addr))
+            self.prints.append('Failed to send {} to {}'.format(msg, self.addr))
 
     def sendBufferToClient(self, buf):
         try:
             self.clientSocket.sendall(buf)
-            #print('Sent {} to {}'.format(buf, self.addr))
+            if self.debug:
+                self.prints.append('Sent {} to {}'.format(buf, self.addr))
         except:
-            print('Failed to send {} to {}'.format(buf, self.addr))
+            self.prints.append('Failed to send {} to {}'.format(buf, self.addr))
 
     def setSleepTime(self, delay):
         self.sleepTime = time.time() + delay
