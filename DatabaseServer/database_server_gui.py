@@ -5,20 +5,37 @@ import time
 import sys
 import psutil
 
+
+
 terminal = None
 screen = None
 
 CPU_percent_label = None
 RAM_usage_percent_label = None
 RAM_usage_left_label = None
+CPU_temp_label = None
 
 CPU_percent_string_var = None
 RAM_usage_percent_string_var = None
 RAM_usage_left_string_var = None
+CPU_temp_string_var = None
 
 commands = []
 
 reqExit = False
+
+usingTemp = False
+
+def setup_temp():
+    try:
+        from gpiozero import CPUTemperature
+        usingTemp = True
+    except:
+        print_gui("System could not find/import 'gpiozero' library, please consider installing to get cpu temperature")
+        usingTemp = False
+
+    if usingTemp:
+        cpu = CPUTemperature()
 
 def reqExitFunc():
     return reqExit
@@ -41,10 +58,12 @@ def main_screen():
     global CPU_percent_label
     global RAM_usage_percent_label
     global RAM_usage_left_label
-    
+    global CPU_temp_label
+
     global CPU_percent_string_var
     global RAM_usage_percent_string_var
     global RAM_usage_left_string_var
+    global CPU_temp_string_var
 
     screen = Tk()
     screen.geometry("900x700")
@@ -69,10 +88,12 @@ def main_screen():
     CPU_percent_string_var = StringVar(right_frame)
     RAM_usage_percent_string_var = StringVar(right_frame)
     RAM_usage_left_string_var = StringVar(right_frame)
+    CPU_temp_string_var = StringVar(right_frame)
 
     CPU_percent_label = Label(right_frame, textvariable=CPU_percent_string_var, width=50)
     RAM_usage_percent_label = Label(right_frame, textvariable=RAM_usage_percent_string_var, width=50)
     RAM_usage_left_label = Label(right_frame, textvariable=RAM_usage_left_string_var, width=50)
+    CPU_temp_label = Label(right_frame, textvariable=CPU_temp_string_var, width=50)
 
     Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=50, height=2).pack()
     CPU_percent_label.pack()
@@ -81,11 +102,20 @@ def main_screen():
     Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=50, height=2).pack()
     RAM_usage_left_label.pack()
     Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=50, height=2).pack()
+    CPU_temp_label.pack()
+    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=50, height=2).pack()
+
+    setup_temp()
 
 def update_computer_info():
     CPU_percent_string_var.set("CPU Usage: {}%".format(psutil.cpu_percent()))
     RAM_usage_percent_string_var.set("RAM Usage: {}%".format(psutil.virtual_memory().percent))
     RAM_usage_left_string_var.set("RAM Remeaining: {}MB/{}MB".format(psutil.virtual_memory().free >> 20, psutil.virtual_memory().total >> 20))
+
+    if usingTemp:
+        CPU_temp_string_var.set("CPU Temperature: {}°C".format(cpu.temperature))
+    else:
+        CPU_temp_string_var.set("No temperature data available")
 
 def print_gui(msg):
     terminal.addText(msg)

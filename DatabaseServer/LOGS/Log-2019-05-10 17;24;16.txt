@@ -1,0 +1,17 @@
+ 
+Server is running on --> 192.168.10.171:8060
+ 
+Server started: 2019-05-10 17:24:16.085972
+>>> check_file:Logf
+Couldn't find userfile 'Logf.ini' in database
+ 
+>>> check_file:Log
+Userfile 'Log.ini' successfully found in database.
+ 
+>>> check_file:mr ikea
+Userfile 'mr ikea.ini' successfully found in database.
+ 
+>>> exit
+ 
+ 
+Server closed: 2019-05-10 17:25:17.926821
