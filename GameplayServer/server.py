@@ -112,6 +112,7 @@ def accept_clients(playerCap, game):
             s = False
 
         if s:
+            clientID += 1
             acceptClientsQueue.put(ClientClass(clientID, s, addr, debug))
             print_log('Incoming connection from {}'.format(addr))
 

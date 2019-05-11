@@ -25,7 +25,7 @@ class GameClass:
     def recv_data(self):
         for client in self.clients:
             if client.clientSocket == None or client.clientSocket.fileno() == -1 or client.toBeRemoved or time.time() - client.lastPacket > self.kick_time:
-                self.prints.append('Removed {} from server due to server-side detect of disconnect or kick command'.format(client.addr))
+                self.prints.append('Removed {} from server due to server-side detect of disconnect, kick command or timeout'.format(client.addr))
                 client.toBeRemoved = True
                 client.clientSocket.close()
                 continue
@@ -40,7 +40,7 @@ class GameClass:
                     for client2 in self.clients:
                         if client.clientID == client2.clientID:
                             continue
-                        data = struct.pack('i', 5) + (' ' + '\x00').encode('utf-8')
+                        data = struct.pack('I', 5) + (' ' + '\x00').encode('utf-8')
                         client2.recvMessage.append(data)
                         client2.recver.append(0)
                     client.clientSocket.close()
@@ -65,10 +65,10 @@ class GameClass:
                 if self.debug:
                     self.prints.append("Recv: {} from {}".format(incoming, client.addr)) 
 
-                unpacked_id = struct.unpack('I', incoming[:4])[0]
+                unpacked_id = struct.unpack('B', incoming[:1])[0]
                 if unpacked_id == 0:
                     client.recvMessage.append(incoming)
-                    client.recver.append(3)
+                    client.recver.append(0)
                 elif unpacked_id == 2 or unpacked_id == 3:
                     # 0 == Login success
                     # 1 == Login fail
@@ -146,8 +146,10 @@ class GameClass:
     def send_data(self):
         for client in self.clients:
             firstSend = True
+            removeItem = True
             if client.calcSleepTime():
-                while len(client.recvMessage) > 0 and client.calcSleepTime():
+                #while len(client.recvMessage) > 0 and client.calcSleepTime():
+                if len(client.recvMessage) > 0:
                     if len(client.recver) == 0 or client.recver[0] == 0:
                         client.sendBufferToClient(client.recvMessage[0])
                     elif client.recver[0] == 1:
@@ -163,15 +165,16 @@ class GameClass:
                             del client.recvMessage[0]
                             if len(client.recver) > 0:
                                 del client.recver[0]
-                            break
+                            removeItem = False
+                            #break
                         else:
-                            del client.recvMessage[0]
-                            if len(client.recver) > 0:
-                                del client.recver[0]
-                            break
-                    del client.recvMessage[0]
-                    if len(client.recver) > 0:
-                        del client.recver[0]
+                            removeItem = False
+                            #break
+
+                    if removeItem:
+                        del client.recvMessage[0]
+                        if len(client.recver) > 0:
+                            del client.recver[0]
                     firstSend = False
 
     def resend_names(self):
@@ -179,7 +182,7 @@ class GameClass:
             for client2 in self.clients:
                 if client.clientID == client2.clientID:
                     continue
-                data = struct.pack('i', 5) + (client2.name + '\x00').encode('utf-8')
+                data = struct.pack('I', 5) + (client2.name + '\x00').encode('utf-8')
                 client.recvMessage.append(data)
                 client.recver.append(0)
 

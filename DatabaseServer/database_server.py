@@ -283,7 +283,7 @@ while running:
             mess = 0
 
         if mess != 0:
-            print_gui_with_log('{} tried to {} with {} and {} at {}'.format(addr, mess, name, pasw, datetime.datetime.today().replace(microsecond=0).replace(":", ";")))
+            print_gui_with_log('{} tried to {} with {} and {} at {}'.format(addr, mess, name, pasw, str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";")))
             print_gui_with_log('Result of login: {}'.format(success))
 
         client.close()
