@@ -6,3 +6,4 @@
 5 = username sharing
 6 = player penalty
 7 = login success
+8 = Attacks
