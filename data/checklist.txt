@@ -1,41 +1,50 @@
+Don = Done
+Not = Not Done
+OHl = On Hold
+
 /// DEADLINES
 2019-06-13 - Game will be complete without game bare bones game mechanics and all networking done.
 2019-08-13 - Game will be completed with mechanics and animations plus sound fully implemented.
 
-* Latency Measurements - Done
-* Multiple clients - Done
-* Make so that the clients can see each others movement - Done
+* Don - Latency Measurements
+* Don - Multiple clients
+* Don - Make so that the clients can see each others movement
 
 /// BUGS
-* Client doesn't time out if disconnected from server while waiting for answer from gameplay server
+* Not - Client doesn't time out if disconnected from server while waiting for answer from gameplay server
 
 /// LEVEL DESIGN
-* Players can make custome maps.
-* 3 Maps, Forest, Open plain & Castle.
+* Not - Players can make custome maps.
+* Not - 3 Maps, Forest, Open plain & Castle.
 
 /// PLAYER
-* Animations
-* Character Customization
-* Emotes
-* Attacks
-* Special Abilities
-* Awards for winning (Rare items, more xp, more currency)
+* Not - Animations
+* Not - Character Customization
+* Not - Emotes
+* Not - Attacks
+* Not - Special Abilities
+* Not - Awards for winning (Rare items, more xp, more currency)
 
 /// SERVER & CLIENT
-* Client Login - Done
-* Client Register - Done 
-* Database Login - Done
-* Database Register - Done
-* Clients recieve name - Done
-* Admin Accounts
-* Lobby Search - On Hold
-* Kick individual client - Done
-* Add logs to gameplay server - Done
-* Restart log file once per timeinterval (database)
-* Restart log file once per timeinterval (gameplay)
+* Don - Client Login
+* Don - Client Register
+* Don - Database Login
+* Don - Database Register
+* Don - Clients recieve name
+* Not - Admin Accounts
+* OHl - Lobby Search
+* Don - Kick individual client
+* Don - Add logs to gameplay server
+* Not - Restart log file once per timeinterval (database)
+* Not - Restart log file once per timeinterval (gameplay)
+* Not - Apply multithreading to accepting and handeling clients (database)
+* Not - Apply multithreading to accept clients (gameplay)
+* Not - Add a 7 - des before False or True at login
+* Not - Evt: Add error message indicator (UserName or Password Incorrect OR Couldn't connect to datebase)
+* Not - Add a spliter when sending more data (ex packet(posdata:ping:more_data) indstead of packet(posdata) packet(ping) packet(more_data))
 
 /// RANKING
-* Global ranking system
+* Not - Global ranking system
 
 /// ACHIEVMENTS
 * It's a tie! (Tie 5 games)
@@ -50,6 +59,6 @@
 * Hype beast (Buy all the cosmetics)
 
 /// SYSTEM
-* Ability to control server via text message
-* Setup SSH
-* Setup FTP
+* Not - Ability to control server via text message
+* Not - Setup SSH
+* Not - Setup FTP
