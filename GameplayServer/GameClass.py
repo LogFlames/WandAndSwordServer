@@ -68,7 +68,7 @@ class GameClass:
                 unpacked_id = struct.unpack('I', incoming[:4])[0]
                 if unpacked_id == 0:
                     client.recvMessage.append(incoming)
-                    client.recver.append(0)
+                    client.recver.append(3)
                 elif unpacked_id == 2 or unpacked_id == 3:
                     # 0 == Login success
                     # 1 == Login fail
