@@ -9,6 +9,7 @@ import configparser
 import datetime
 import hashlib
 import threading
+import queue
 
 from database_server_gui import *
 
@@ -25,24 +26,33 @@ os.makedirs(path_to_logs, exist_ok=True)
 
 session_temp = str(int(time.time()))
 
-SESSION_ID = hex(int(session_temp[len(session_temp) - 10:]))
+SESSION_ID = session_temp[len(session_temp) - 10:]
 
 log_file = open(os.path.join(path_to_logs, "Log-database-server-{}-{}.txt".format(SESSION_ID, str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
 
 serverSocket = None
 
+def print_gui_with_log(msg):
+    log_file.write(msg + "\n")
+    print_gui(msg)
+
 runningLogFileThread = True
+reloadLogfileThreadOpen = False
 
 def reload_log_file(timeInterval):
     global log_file
+    global reloadLogfileThreadOpen
 
-    print_gui_with_log('    Logfile will reload every {} seconds'.format(str(timeInterval)))
+    reloadLogfileThreadOpen = True
+
+    print_gui_with_log('Logfile will reload every {} seconds'.format(str(timeInterval)))
 
     while runningLogFileThread:
         waitedTime = 0
         while waitedTime < timeInterval:
             waitedTime += 0.5
             if not runningLogFileThread:
+                reloadLogfileThreadOpen = False
                 return
             time.sleep(0.5)
 
@@ -54,9 +64,7 @@ def reload_log_file(timeInterval):
 
             print_gui_with_log('New logfile started...')
 
-def print_gui_with_log(msg):
-    print_gui(msg)
-    log_file.write(msg + "\n")
+    reloadLogfileThreadOpen = False
 
 def addUser(name, password):
     if checkFile(name):
@@ -135,6 +143,7 @@ def bindServer(hst="ip"):
         log_file.close()
         exit()
 
+
     port = 8060
 
     try:
@@ -149,25 +158,28 @@ def bindServer(hst="ip"):
     serverSocket.setblocking(0)
     serverSocket.settimeout(0.05)
 
-
 bindServer()
 
 running = True
 
-print_gui_with_log("Server started: {}".format(datetime.datetime.now()))
-
-print_gui_with_log('    Starting logfile reload thread')
+print_gui_with_log('Starting logfile reload thread')
 reloadLogThread = threading.Thread(target=reload_log_file, args=(7200,), daemon=True)
 reloadLogThread.start()
-print_gui_with_log('    Logfile reload thread started')
+print_gui_with_log('Logfile reload thread started')
+print_gui_with_log(' ')
+
+print_gui_with_log("Server started: {}".format(datetime.datetime.now()))
 
 while running:
     if reqExitFunc():
         print_gui_with_log("Exiting program, window closed requested.")
         running = False
         continue
+
     update_computer_info()
+    process_print_queue()
     screen.update()
+
     for command in getCommands():
         if command == "help" or command == "?":
             print_gui("Help menu:")
@@ -199,8 +211,8 @@ while running:
             print_gui_with_log(" ")
         elif command.startswith("user_info:"):
             print_gui_with_log(">>> {}".format(command))
+            command = command[10:]
             if checkFile(command):
-                command = command[10:]
                 print_gui_with_log("User info '{}': ".format(command))
                 for line in getUserInfo(command):
                     print_gui_with_log(line)
@@ -220,6 +232,8 @@ while running:
         client = False
 
     if client:
+        addLoginRequest()
+
         print_gui_with_log('Incomming connection from {}'.format(addr))
         client.setblocking(0)
         client.settimeout(1)
@@ -269,7 +283,7 @@ while running:
             mess = 0
 
         if mess != 0:
-            print_gui_with_log('{} tried to {} with {} and {}'.format(addr, mess, name, pasw))
+            print_gui_with_log('{} tried to {} with {} and {} at {}'.format(addr, mess, name, pasw, datetime.datetime.today().replace(microsecond=0).replace(":", ";")))
             print_gui_with_log('Result of login: {}'.format(success))
 
         client.close()
@@ -281,6 +295,8 @@ print_gui_with_log("Server closed: {}".format(datetime.datetime.now()))
 
 print_gui_with_log("Attempting logfile reload thread closedown")
 runningLogFileThread = False
+while reloadLogfileThreadOpen:
+    time.sleep(0.1)
 print_gui_with_log("Logfile reload thread stopped")
 
 print_gui_with_log("Attempting to close logfile, assume success.")

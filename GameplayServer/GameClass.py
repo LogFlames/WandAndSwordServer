@@ -12,17 +12,19 @@ class GameClass:
 
         self.prints = []
 
-    def addClient(self, client):
+        self.kick_time = 11
+
+    def add_client(self, client):
         self.clients.append(client)
 
-    def cleanClients(self):
+    def clean_clients(self):
         for index in range(len(self.clients) - 1, -1, -1):
             if self.clients[index].toBeRemoved:
                 del self.clients[index]
 
-    def recvData(self):
+    def recv_data(self):
         for client in self.clients:
-            if client.clientSocket == None or client.clientSocket.fileno() == -1 or client.toBeRemoved:
+            if client.clientSocket == None or client.clientSocket.fileno() == -1 or client.toBeRemoved or time.time() - client.lastPacket > self.kick_time:
                 self.prints.append('Removed {} from server due to server-side detect of disconnect or kick command'.format(client.addr))
                 client.toBeRemoved = True
                 client.clientSocket.close()
@@ -50,6 +52,8 @@ class GameClass:
                 gotData = False
 
             if gotData:
+                client.lastPacket = time.time()
+
                 # unpack struct
                 # ping 0
                 # pos 1
@@ -59,18 +63,21 @@ class GameClass:
                 # usernames 5
 
                 if self.debug:
-                    self.prints.append("Recv: {} from {}".format(incoming, client.addr))
-                
-                unpacked_id = struct.unpack('B', incoming[:1])[0]
+                    self.prints.append("Recv: {} from {}".format(incoming, client.addr)) 
+
+                unpacked_id = struct.unpack('I', incoming[:4])[0]
                 if unpacked_id == 0:
                     client.recvMessage.append(incoming)
                     client.recver.append(0)
                 elif unpacked_id == 2 or unpacked_id == 3:
+                    # 0 == Login success
+                    # 1 == Login fail
+                    # 2 == Database down
                     data = incoming[4:].decode('utf-8').strip()
 
                     splitData = list(filter(None, data.split('\x00')))
                     if len(splitData) != 2:
-                        client.recvMessage.append(struct.pack('?', False))
+                        client.recvMessage.append(struct.pack('II', 7, 1))
                         client.recver.append(0)
                         continue
 
@@ -83,7 +90,7 @@ class GameClass:
                         s.connect(('192.168.10.171', 8060))
                     except:
                         self.prints.append("Couldn't connect to database.")
-                        client.recvMessage.append(struct.pack('?', False))
+                        client.recvMessage.append(struct.pack('II', 7, 2))
                         client.recver.append(0)
                         continue
 
@@ -95,7 +102,7 @@ class GameClass:
                     try:
                         db_response = s.recv(32)
                     except:
-                        client.recvMessage.append(struct.pack('?', False))
+                        client.recvMessage.append(struct.pack('II', 7, 1))
                         client.recver.append(0)
                         continue
 
@@ -111,20 +118,23 @@ class GameClass:
                         for client2 in self.clients:
                             if client.clientID == client2.clientID:
                                 continue
-                            data = struct.pack('i', 5) + (client.name + '\x00').encode('utf-8')
+                            data = struct.pack('I', 5) + (client.name + '\x00').encode('utf-8')
                             client2.recvMessage.append(data)
                             client2.recver.append(0)
 
-                            # JUST WORK >:(
-                            # Pulling names from other clients
-                            data = struct.pack('i', 5) + (client2.name + '\x00').encode('utf-8')
+                            data = struct.pack('I', 5) + (client2.name + '\x00').encode('utf-8')
                             client.recvMessage.append(data)
                             client.recver.append(0)
                             
                     client.recvMessage.insert(0, 0.08)
                     client.recver.insert(0, 2)
 
-                    client.recvMessage.insert(0, struct.pack('?', success))
+                    if success:
+                        successID = 0
+                    else:
+                        successID = 1
+
+                    client.recvMessage.insert(0, struct.pack('II', 7, successID))
                     client.recver.insert(0, 0)
                 else:
                     for client2 in self.clients:
@@ -133,10 +143,10 @@ class GameClass:
                         client2.recvMessage.append(incoming)
                         client2.recver.append(0)
 
-    def sendData(self):
+    def send_data(self):
         for client in self.clients:
             if client.calcSleepTime():
-                if len(client.recvMessage) > 0:
+                while len(client.recvMessage) > 0 and client.calcSleepTime():
                     if len(client.recver) == 0 or client.recver[0] == 0:
                         client.sendBufferToClient(client.recvMessage[0])
                     elif client.recver[0] == 1:
@@ -150,7 +160,7 @@ class GameClass:
                     if len(client.recver) > 0:
                         del client.recver[0]
 
-    def resendNames(self):
+    def resend_names(self):
         for client in self.clients:
             for client2 in self.clients:
                 if client.clientID == client2.clientID:

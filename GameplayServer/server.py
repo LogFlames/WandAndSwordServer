@@ -21,7 +21,7 @@ os.makedirs(path_to_logs, exist_ok=True)
 
 session_temp = str(int(time.time()))
 
-SESSION_ID = hex(int(session_temp[len(session_temp) - 10:]))
+SESSION_ID = session_temp[len(session_temp) - 10:]
 
 log_file = open(os.path.join(path_to_logs, "Log-gameplay-server-{}-{}.txt".format(SESSION_ID, str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
 
@@ -48,24 +48,29 @@ def getIP():
 
     return s.getsockname()[0]
 
+inputQueue = queue.Queue()
 runningInputThread = True
-threadOpen = False
+inputThreadOpen = False
 
 def read_kbd_input(inputQueue):
-    global threadOpen
+    global inputThreadOpen
 
     print_log('    Terminal ready for keyboard input')
-    threadOpen = True
+    inputThreadOpen = True
     inputQueue.put('help')
     while runningInputThread:
         input_str = input()
         inputQueue.put(input_str)
-    threadOpen = False
+    inputThreadOpen = False
 
 runningLogFileThread = True
+LogfileThreadOpen = False
 
 def reload_log_file(timeInterval):
     global log_file
+    global LogfileThreadOpen
+
+    LogfileThreadOpen = True
 
     print_log('    Logfile will reload every {} seconds'.format(str(timeInterval)))
 
@@ -74,6 +79,7 @@ def reload_log_file(timeInterval):
         while waitedTime < timeInterval:
             waitedTime += 0.5
             if not runningLogFileThread:
+                LogfileThreadOpen = False
                 return
             time.sleep(0.5)
 
@@ -84,6 +90,32 @@ def reload_log_file(timeInterval):
             log_file = open(os.path.join(path_to_logs, "Log-gameplay-server-{}-{}.txt".format(SESSION_ID, str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
 
             print_log('New logfile started...')
+
+    LogfileThreadOpen = False
+
+runningAcceptClientThread = True
+acceptClientsThreadOpen = False
+acceptClientsQueue = queue.Queue()
+
+def accept_clients(playerCap, game):
+    global acceptClientsThreadOpen
+
+    acceptClientsThreadOpen = True
+
+    clientID = 0
+    print_log('    Accept clients thread started')
+
+    while runningAcceptClientThread:
+        try:
+            s, addr = serverSocket.accept()
+        except:
+            s = False
+
+        if s:
+            acceptClientsQueue.put(ClientClass(clientID, s, addr, debug))
+            print_log('Incoming connection from {}'.format(addr))
+
+    acceptClientsThreadOpen = False
 
 hostChosen = False
 while not hostChosen:
@@ -136,17 +168,14 @@ while playerCap == -1:
         print_log("{} isn't a whole numeric value".format(playerCap_str))
 
 game = GameClass()
-clientID = 0
 
 serverSocket.listen(5)
 serverSocket.setblocking(0)
-serverSocket.settimeout(0.001)
+serverSocket.settimeout(0.2)
 
 debug = False
 
 running = True
-
-inputQueue = queue.Queue()
 
 print_log('    Debug is currently set to DISABLED')
 
@@ -159,6 +188,11 @@ print_log('    Starting logfile reload thread')
 reloadLogThread = threading.Thread(target=reload_log_file, args=(7200,), daemon=True)
 reloadLogThread.start()
 print_log('    Logfile reload thread started')
+
+print_log('    Starting client accept thread')
+acceptClientsThread = threading.Thread(target=accept_clients, args=(playerCap, game,), daemon=True)
+acceptClientsThread.start()
+print_log('    Client accept thread started')
 
 print_log('    Starting main server loop')
 print_log(' ')
@@ -198,7 +232,7 @@ while running:
                 print_log('ID: {}, Addr: {}, Name: {}'.format(client.clientID, client.addr, client.name))
             print_log(' ')
         elif line == 'resend-names':
-            game.resendNames()
+            game.resend_names()
             print_log('Resent all name data to clients')
             for client in game.clients:
                 print_log('ID: {}, Addr: {} ||| Name: {}'.format(client.clientID, client.addr, client.name))
@@ -216,23 +250,18 @@ while running:
         else:
             print_log('{} is a unknown command, type help for a list of commands.'.format(line))
 
-    try:
-        s, addr = serverSocket.accept()
-    except:
-        s = False
-
-    if s:
+    if acceptClientsQueue.qsize() > 0:
+        client = acceptClientsQueue.get()
         if playerCap != -1 and len(game.clients) >= playerCap:
-            print_log('Kicked {} from the server, already {}/{} players online'.format(addr, str(playerCap), str(playerCap)))
-            s.close()
+            print_log('Kicked {} from the server, already {}/{} players online'.format(client.addr, str(playerCap), str(playerCap)))
+            client.clientSocket.close()
         else:
-            clientID += 1
-            game.addClient(ClientClass(clientID, s, addr, debug))
+            print_log('{} was accepted into the server'.format(client.addr))
+            game.add_client(client)
 
-            s.setblocking(0)
-            s.settimeout(0.001)
+            client.clientSocket.setblocking(0)
+            client.clientSocket.settimeout(0.001)
 
-            print_log('Incoming connection from {}'.format(addr))
 
     game.update_print_request()
 
@@ -240,11 +269,25 @@ while running:
         print_log(msg)
     game.prints = []
 
-    game.recvData()
+    game.recv_data()
 
-    game.cleanClients()
+    game.clean_clients()
 
-    game.sendData()
+    game.send_data()
+
+print_log('        Attempting to kick all clients from server')
+for client in game.clients:
+    client.clientSocket.close()
+    client.toBeRemoved = True
+game.clean_clients()
+
+print_log('        Kicked all clients from server')
+
+print_log('        Attempting to close client accept thread')
+runningAcceptClientThread = False
+while acceptClientsThreadOpen:
+    time.sleep(0.1)
+print_log('        Accept clients thread safetly closed down')
 
 print_log('        Attempting to close down serversocket')
 serverSocket.close()
@@ -253,15 +296,20 @@ print_log(' ')
 print_log('        Closing down input thread')
 runningInputThread = False
 print_log('    Press ENTER to ensure safe closedown of input thread...')
-while threadOpen:
-    time.sleep(0.5)
+while inputThreadOpen:
+    time.sleep(0.1)
 print_log('        Thread closed properly')
 
 print_log(' ')
-print_log('    Attempting to close down log file, assume success')
+print_log('        Attempting to close logfile reload thread')
 runningLogFileThread = False
+while LogfileThreadOpen:
+    time.sleep(0.1)
+print_log('        Logfile reload thread safetly closed down')
+print_log(' ')
+print_log('        Attempting to close down log file, assume success')
 log_file.close()
-print('    Logfile closed down properly')
+print('        Logfile closed down properly')
 
 print(' ')
-print('    Server closed down properly')
+print('Server closed down properly')

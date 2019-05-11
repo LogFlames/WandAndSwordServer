@@ -21,6 +21,8 @@ class ClientClass:
 
         self.prints = []
 
+        self.lastPacket = time.time() + 11
+
     def sendToClient(self, msg):
         try:
             self.clientSocket.sendall((msg + '\n').encode('utf-8'))

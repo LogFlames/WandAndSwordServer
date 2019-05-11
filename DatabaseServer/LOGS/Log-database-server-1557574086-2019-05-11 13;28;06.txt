@@ -1,0 +1,77 @@
+ 
+Server is running on --> 192.168.10.171:8060
+ 
+Starting logfile reload thread
+Logfile will reload every 7200 seconds
+Logfile reload thread started
+ 
+Server started: 2019-05-11 13:28:06.467402
+>>> user_info:Log
+Couldn't find userfile 'Log'
+>>> check_file:Log
+Couldn't find userfile 'Log.ini' in database
+ 
+>>> check_file:mr ikea
+Userfile 'mr ikea.ini' successfully found in database.
+ 
+>>> user_info:mr ikea
+User info 'mr ikea': 
+[credentials]
+
+password = 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+
+
+
+ 
+Incomming connection from ('192.168.10.171', 54916)
+('192.168.10.171', 54916) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 55776)
+('192.168.10.171', 55776) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 55813)
+('192.168.10.171', 55813) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 55929)
+('192.168.10.171', 55929) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 55964)
+('192.168.10.171', 55964) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 55998)
+('192.168.10.171', 55998) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 56105)
+('192.168.10.171', 56105) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 56111)
+('192.168.10.171', 56111) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 56136)
+('192.168.10.171', 56136) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 56145)
+('192.168.10.171', 56145) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 57223)
+('192.168.10.171', 57223) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 57298)
+('192.168.10.171', 57298) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 57350)
+('192.168.10.171', 57350) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 57404)
+('192.168.10.171', 57404) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 57439)
+('192.168.10.171', 57439) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 57518)
+('192.168.10.171', 57518) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Incomming connection from ('192.168.10.171', 59637)
+('192.168.10.171', 59637) tried to login to an account with mr ikea and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c
+Result of login: True
+Reloading logfile...

@@ -4,6 +4,7 @@ from tkinter import *
 import time
 import sys
 import psutil
+import queue
 
 cpu = None
 
@@ -14,17 +15,27 @@ CPU_percent_label = None
 RAM_usage_percent_label = None
 RAM_usage_left_label = None
 CPU_temp_label = None
+REQUESTS_of_login_label = None
 
 CPU_percent_string_var = None
 RAM_usage_percent_string_var = None
 RAM_usage_left_string_var = None
 CPU_temp_string_var = None
+REQUESTS_of_login_string_var = None
+
+print_queue = queue.Queue()
 
 commands = []
 
 reqExit = False
 
 usingTemp = False
+
+requests_of_login_counter = 0
+
+def addLoginRequest():
+    global requests_of_login_counter
+    requests_of_login_counter += 1
 
 def setup_temp():
     global cpu
@@ -61,11 +72,13 @@ def main_screen():
     global RAM_usage_percent_label
     global RAM_usage_left_label
     global CPU_temp_label
+    global REQUESTS_of_login_label
 
     global CPU_percent_string_var
     global RAM_usage_percent_string_var
     global RAM_usage_left_string_var
     global CPU_temp_string_var
+    global REQUESTS_of_login_string_var
 
     screen = Tk()
     screen.geometry("900x700")
@@ -93,11 +106,13 @@ def main_screen():
     CPU_temp_string_var = StringVar(right_frame)
     RAM_usage_percent_string_var = StringVar(right_frame)
     RAM_usage_left_string_var = StringVar(right_frame)
+    REQUESTS_of_login_string_var = StringVar(right_frame)
 
     CPU_percent_label = Label(right_frame, textvariable=CPU_percent_string_var, width=labelWidth)
     CPU_temp_label = Label(right_frame, textvariable=CPU_temp_string_var, width=labelWidth)
     RAM_usage_percent_label = Label(right_frame, textvariable=RAM_usage_percent_string_var, width=labelWidth)
     RAM_usage_left_label = Label(right_frame, textvariable=RAM_usage_left_string_var, width=labelWidth)
+    REQUESTS_of_login_label = Label(right_frame, textvariable=REQUESTS_of_login_string_var, width=labelWidth)
 
     Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=labelWidth, height=2).pack()
     CPU_percent_label.pack()
@@ -107,6 +122,8 @@ def main_screen():
     RAM_usage_percent_label.pack()
     Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=labelWidth, height=2).pack()
     RAM_usage_left_label.pack()
+    Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=labelWidth, height=2).pack()
+    REQUESTS_of_login_label.pack()
     Label(right_frame, text=" ----- ----- ----- ----- ----- ----- ----- ----- ", width=labelWidth, height=2).pack()
 
     setup_temp()
@@ -121,8 +138,14 @@ def update_computer_info():
     else:
         CPU_temp_string_var.set("No temperature data available")
 
+    REQUESTS_of_login_string_var.set("Requested logins: {}".format(requests_of_login_counter))
+
+def process_print_queue():
+    while print_queue.qsize() > 0:
+        terminal.addText(print_queue.get())
+
 def print_gui(msg):
-    terminal.addText(msg)
+    print_queue.put(msg)
 
 class Application(Frame):
     def __init__(self, master, typ):

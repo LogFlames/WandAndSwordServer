@@ -1,0 +1,73 @@
+    Host ip set to: 192.168.10.171
+ 
+        Server is running on --> 192.168.10.171:8059
+ 
+    Debug is currently set to DISABLED
+    Starting input thread
+    Terminal ready for keyboard input
+    Input thread started
+    Starting logfile reload thread
+    Logfile will reload every 7200 seconds
+    Logfile reload thread started
+    Starting client accept thread
+    Accept clients thread started
+    Client accept thread started
+    Starting main server loop
+ 
+>>> help
+Help menu:
+help - Show this menu
+exit - close the server
+kick-all - Kicks all clients from server
+kick-(id)(id)(id)(...) - Kick client of specified id. example "kick-(3)", "kick-(5)(7)"
+list-clients - Lists all clients connected to the server
+resend-names - Resends all names to connected clients
+debug - enable/disable debug mode.
+ 
+Incoming connection from ('90.236.87.224', 15835)
+('90.236.87.224', 15835) was accepted into the server
+Kicked ('90.236.87.224', 15835) from the server
+Incoming connection from ('90.236.87.224', 15881)
+('90.236.87.224', 15881) was accepted into the server
+Kicked ('90.236.87.224', 15881) from the server
+Incoming connection from ('90.236.87.224', 15935)
+('90.236.87.224', 15935) was accepted into the server
+Kicked ('90.236.87.224', 15935) from the server
+Incoming connection from ('90.236.87.224', 15959)
+('90.236.87.224', 15959) was accepted into the server
+mr ikea: successful login or account creation.
+Incoming connection from ('90.236.87.224', 16070)
+('90.236.87.224', 16070) was accepted into the server
+mr ikea: successful login or account creation.
+Kicked ('90.236.87.224', 16070) from the server
+Incoming connection from ('90.236.87.224', 16207)
+('90.236.87.224', 16207) was accepted into the server
+mr ikea: successful login or account creation.
+Kicked ('90.236.87.224', 16207) from the server
+>>> list-clients
+Clients: 
+ID: 0, Addr: ('90.236.87.224', 15959), Name: mr ikea
+ 
+>>> list-clients
+Clients: 
+ID: 0, Addr: ('90.236.87.224', 15959), Name: mr ikea
+ 
+>>> list-clients
+Clients: 
+ID: 0, Addr: ('90.236.87.224', 15959), Name: mr ikea
+ 
+>>> exit
+Attempting to close the server
+        Attempting to close client accept thread
+        Accept clients thread safetly closed down
+        Attempting to close down serversocket
+        Serversocket closed
+ 
+        Closing down input thread
+    Press ENTER to ensure safe closedown of input thread...
+        Thread closed properly
+ 
+        Attempting to close logfile reload thread
+        Logfile reload thread safetly closed down
+ 
+        Attempting to close down log file, assume success
