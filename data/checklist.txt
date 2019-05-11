@@ -11,7 +11,7 @@ OHl = On Hold
 * Don - Make so that the clients can see each others movement
 
 /// BUGS
-* Not - Client doesn't time out if disconnected from server while waiting for answer from gameplay server
+* Not - Client doesn't time out if disconnected from server while waiting for answer from gameplay server for login details
 
 /// LEVEL DESIGN
 * Not - Players can make custome maps.
@@ -40,6 +40,7 @@ OHl = On Hold
 * Not - Apply multithreading to accepting and handeling clients (database)
 * Not - Apply multithreading to accept clients (gameplay)
 * Not - Add a 7 - des before False or True at login
+* Not - Add a kick function based on not recieving ping packets
 * Not - Evt: Add error message indicator (UserName or Password Incorrect OR Couldn't connect to datebase)
 * Not - Add a spliter when sending more data (ex packet(posdata:ping:more_data) indstead of packet(posdata) packet(ping) packet(more_data))
 
