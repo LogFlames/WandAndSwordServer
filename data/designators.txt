@@ -1,0 +1,9 @@
+0 = ping
+1 = position
+2 = login credentials
+3 = new account credentiales
+4 = server to data base pull credentials request
+5 = username sharing
+6 = player penalty
+7 = Login success
+8 = Attack
