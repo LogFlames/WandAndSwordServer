@@ -6,10 +6,6 @@ OHl = On Hold
 2019-06-13 - Game will be complete without game bare bones game mechanics and all networking done.
 2019-08-13 - Game will be completed with mechanics and animations plus sound fully implemented.
 
-* Don - Latency Measurements
-* Don - Multiple clients
-* Don - Make so that the clients can see each others movement
-
 /// BUGS
 * Not - Client doesn't time out if disconnected from server while waiting for answer from gameplay server for login details
 
@@ -26,6 +22,9 @@ OHl = On Hold
 * Not - Awards for winning (Rare items, more xp, more currency)
 
 /// SERVER & CLIENT
+* Don - Latency Measurements
+* Don - Multiple clients
+* Don - Make so that the clients can see each others movement
 * Don - Client Login
 * Don - Client Register
 * Don - Database Login
@@ -35,8 +34,8 @@ OHl = On Hold
 * OHl - Lobby Search
 * Don - Kick individual client
 * Don - Add logs to gameplay server
-* Not - Restart log file once per timeinterval (database)
-* Not - Restart log file once per timeinterval (gameplay)
+* Don - Restart log file once per timeinterval (database)
+* Don - Restart log file once per timeinterval (gameplay)
 * Not - Apply multithreading to accepting and handeling clients (database)
 * Not - Apply multithreading to accept clients (gameplay)
 * Not - Add a 7 - des before False or True at login

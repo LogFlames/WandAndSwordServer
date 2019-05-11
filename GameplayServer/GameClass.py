@@ -2,9 +2,7 @@
 
 import struct
 import time
-from datetime import datetime
 import socket
-import itertools
 
 class GameClass:
     def __init__(self):

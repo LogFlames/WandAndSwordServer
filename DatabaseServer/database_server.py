@@ -8,6 +8,7 @@ import os
 import configparser
 import datetime
 import hashlib
+import threading
 
 from database_server_gui import *
 
@@ -22,7 +23,36 @@ path_to_logs = os.path.join(path_to_script, LOG_FILES)
 os.makedirs(path_to_users, exist_ok=True)
 os.makedirs(path_to_logs, exist_ok=True)
 
-log_file = open(os.path.join(path_to_logs, "Log-database-server-{}.txt".format(str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
+session_temp = str(int(time.time()))
+
+SESSION_ID = hex(int(session_temp[len(session_temp) - 10:]))
+
+log_file = open(os.path.join(path_to_logs, "Log-database-server-{}-{}.txt".format(SESSION_ID, str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
+
+serverSocket = None
+
+runningLogFileThread = True
+
+def reload_log_file(timeInterval):
+    global log_file
+
+    print_gui_with_log('    Logfile will reload every {} seconds'.format(str(timeInterval)))
+
+    while runningLogFileThread:
+        waitedTime = 0
+        while waitedTime < timeInterval:
+            waitedTime += 0.5
+            if not runningLogFileThread:
+                return
+            time.sleep(0.5)
+
+        if runningLogFileThread:
+            print_gui_with_log('Reloading logfile...')
+
+            log_file.close()
+            log_file = open(os.path.join(path_to_logs, "Log-gameplay-server-{}-{}.txt".format(SESSION_ID, str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
+
+            print_gui_with_log('New logfile started...')
 
 def print_gui_with_log(msg):
     print_gui(msg)
@@ -125,6 +155,11 @@ bindServer()
 running = True
 
 print_gui_with_log("Server started: {}".format(datetime.datetime.now()))
+
+print_gui_with_log('    Starting logfile reload thread')
+reloadLogThread = threading.Thread(target=reload_log_file, args=(7200,), daemon=True)
+reloadLogThread.start()
+print_gui_with_log('    Logfile reload thread started')
 
 while running:
     if reqExitFunc():
@@ -244,4 +279,9 @@ serverSocket.close()
 print_gui_with_log(" ")
 print_gui_with_log("Server closed: {}".format(datetime.datetime.now()))
 
+print_gui_with_log("Attempting logfile reload thread closedown")
+runningLogFileThread = False
+print_gui_with_log("Logfile reload thread stopped")
+
+print_gui_with_log("Attempting to close logfile, assume success.")
 log_file.close()

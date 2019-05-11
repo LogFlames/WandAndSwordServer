@@ -6,11 +6,11 @@ import queue
 import time
 import struct
 import re
-import os
 import datetime
+import os
 
-from ClientClass import *
-from GameClass import *
+from ClientClass import ClientClass
+from GameClass import GameClass
 
 LOG_FILES = "LOGS"
 
@@ -19,7 +19,11 @@ path_to_logs = os.path.join(path_to_script, LOG_FILES)
 
 os.makedirs(path_to_logs, exist_ok=True)
 
-log_file = open(os.path.join(path_to_logs, "Log-gameplay-server-{}.txt".format(str(datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
+session_temp = str(int(time.time()))
+
+SESSION_ID = hex(int(session_temp[len(session_temp) - 10:]))
+
+log_file = open(os.path.join(path_to_logs, "Log-gameplay-server-{}-{}.txt".format(SESSION_ID, str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
 
 def print_log(msg):
     print(msg)
@@ -58,6 +62,29 @@ def read_kbd_input(inputQueue):
         inputQueue.put(input_str)
     threadOpen = False
 
+runningLogFileThread = True
+
+def reload_log_file(timeInterval):
+    global log_file
+
+    print_log('    Logfile will reload every {} seconds'.format(str(timeInterval)))
+
+    while runningLogFileThread:
+        waitedTime = 0
+        while waitedTime < timeInterval:
+            waitedTime += 0.5
+            if not runningLogFileThread:
+                return
+            time.sleep(0.5)
+
+        if runningLogFileThread:
+            print_log('Reloading logfile...')
+
+            log_file.close()
+            log_file = open(os.path.join(path_to_logs, "Log-gameplay-server-{}-{}.txt".format(SESSION_ID, str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
+
+            print_log('New logfile started...')
+
 hostChosen = False
 while not hostChosen:
     host = input("Use host-machine ip or localhost? (ip <---> localhost): ")
@@ -83,6 +110,7 @@ while not portChosen:
         continue
     try:
         serverSocket.bind((host, port))
+        
         print_log('        Server is running on --> {}:{}'.format(host, port))
         portChosen = True
     except:
@@ -126,6 +154,11 @@ print_log('    Starting input thread')
 inputThread = threading.Thread(target=read_kbd_input, args=(inputQueue,), daemon=True)
 inputThread.start()
 print_log('    Input thread started')
+
+print_log('    Starting logfile reload thread')
+reloadLogThread = threading.Thread(target=reload_log_file, args=(7200,), daemon=True)
+reloadLogThread.start()
+print_log('    Logfile reload thread started')
 
 print_log('    Starting main server loop')
 print_log(' ')
@@ -224,9 +257,11 @@ while threadOpen:
     time.sleep(0.5)
 print_log('        Thread closed properly')
 
-print_log('    Attempting to close down log file')
+print_log(' ')
+print_log('    Attempting to close down log file, assume success')
+runningLogFileThread = False
 log_file.close()
-print('    LogFile closed down properly')
+print('    Logfile closed down properly')
 
-print(' ----- ----- ----- ----- ----- ----- ----- ')
-print('        Server closed down properly')
+print(' ')
+print('    Server closed down properly')
