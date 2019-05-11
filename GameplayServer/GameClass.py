@@ -145,6 +145,7 @@ class GameClass:
 
     def send_data(self):
         for client in self.clients:
+            firstSend = True
             if client.calcSleepTime():
                 while len(client.recvMessage) > 0 and client.calcSleepTime():
                     if len(client.recver) == 0 or client.recver[0] == 0:
@@ -156,9 +157,22 @@ class GameClass:
                             client2.sendBufferToClient(client.recvMessage[0])
                     elif client.recver[0] == 2:
                         client.setSleepTime(client.recvMessage[0])
+                    elif client.recver[0] == 3:
+                        if firstSend:
+                            client.sendBufferToClient(client.recvMessage[0])
+                            del client.recvMessage[0]
+                            if len(client.recver) > 0:
+                                del client.recver[0]
+                            break
+                        else:
+                            del client.recvMessage[0]
+                            if len(client.recver) > 0:
+                                del client.recver[0]
+                            break
                     del client.recvMessage[0]
                     if len(client.recver) > 0:
                         del client.recver[0]
+                    firstSend = False
 
     def resend_names(self):
         for client in self.clients:

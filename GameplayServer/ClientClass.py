@@ -13,6 +13,12 @@ class ClientClass:
         self.toBeRemoved = False
 
         self.recvMessage = []
+
+        # 0 == send to self
+        # 1 == send to everyone else
+        # 2 == sleep
+        # 3 == send to self alone
+
         self.recver = []
 
         self.sleepTime = 0
