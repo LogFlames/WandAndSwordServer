@@ -62,6 +62,7 @@ OHl = On Hold
 * Hype beast (Buy all the cosmetics)
 
 /// SYSTEM
+* Not - Server Stress Tester (client amount, average data transfer / receiving rate etc)
 * Not - Ability to control server via text message
 * Not - Setup SSH
 * Not - Setup FTP
