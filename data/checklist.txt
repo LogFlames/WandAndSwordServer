@@ -19,6 +19,7 @@ OHl = On Hold
 * Not - Emotes
 * Not - Attacks
 * Not - Special Abilities
+* Not - Combos
 * Not - Awards for winning (Rare items, more xp, more currency)
 
 /// SERVER & CLIENT
