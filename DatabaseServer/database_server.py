@@ -17,6 +17,8 @@ USER_FOLDER = "USERS"
 
 LOG_FILES = "LOGS"
 
+debug = False
+
 path_to_script = os.path.dirname(__file__)
 path_to_users = os.path.join(path_to_script, USER_FOLDER)
 path_to_logs = os.path.join(path_to_script, LOG_FILES)
@@ -95,6 +97,8 @@ def checkLogin(name, password):
     config = configparser.ConfigParser()
     config.read(os.path.join(path_to_users, name + ".ini"))
 
+    print_gui(config['credentials']['password'])
+
     if config['credentials']['password'] == password:
         return True
     return False
@@ -123,6 +127,14 @@ def getIP():
         return 'localhost'
 
     return s.getsockname()[0]
+
+def sendSuccess(client, res, addr="no data given"):
+    data = struct.pack('?', res)
+
+    client.sendall(data)
+
+    if debug:
+        print_gui_with_log("Sent {} to {}".format(data, addr))
 
 def bindServer(hst="ip"):
     global serverSocket
@@ -189,6 +201,7 @@ while running:
             print_gui("check_file:(name) - Check if file exists. Example: 'check_file:Log'")
             print_gui("user_info:(name) - Prints all info about a user. Example: 'check_user:Log'")
             print_gui("rebind_server:(mode) - Reopenes the server in new mode. Avaiable modes: [ip, localhost]")
+            print_gui("debug - Enable or Disable debug mode")
             print_gui(" ")
         elif command == "exit":
             print_gui_with_log(">>> {}".format(command))
@@ -223,6 +236,11 @@ while running:
             print_gui_with_log(">>> {}".format(command))
             command = command[14:]
             bindServer(command)
+        elif command == "debug":
+            print_gui_with_log(">>> {}".format(command))
+            debug = not debug
+            msg_str = "ENABLED" if debug else "DISABLED"
+            print_gui_with_log("Debug-mode is: {}".format(msg_str))
         else:
             print_gui("Unknown command, type help to open available commands.")
 
@@ -247,39 +265,43 @@ while running:
                 continue
         except:
             print_gui_with_log("{} didn't send any recievable message.".format(addr))
-            client.sendall(struct.pack('?', False))
+            sendSuccess(client, False, addr)
             client.close()
             continue
 
-        if len(incoming.decode('utf-8').strip().split("\x00")) != 3:
+        if debug:
+            print_gui_with_log("{} sent {} at {}".format(addr, incoming, str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";")))
+
+        if len(list(filter(None, incoming.decode('utf-8').strip().split("\x00")))) != 3:
             print_gui_with_log("{} didn't send a correctly formated message.".format(addr))
-            client.sendall(struct.pack('?', False))
+            sendSuccess(client, False, addr)
             client.close()
             continue
 
         success = False
 
-        typ, name, pasw = incoming.decode('utf-8').strip().split("\x00")
+        typ, name, pasw = list(filter(None, incoming.decode('utf-8').strip().split("\x00")))
         pasw = hashlib.sha256(pasw.encode('utf-8')).hexdigest()
 
         mess = ""
 
-        if typ.startswith("c"):
+        if typ == "c":
             mess = "create an account"
             if addUser(name, pasw):
                 success = True
-                client.sendall(struct.pack('?', True))
+                sendSuccess(client, True, addr)
             else:
-                client.sendall(struct.pack('?', False))
-        elif typ.startswith("l"):
+                sendSuccess(client, False, addr)
+        elif typ == "l":
             mess = "login to an account"
             if checkLogin(name, pasw):
                 success = True
-                client.sendall(struct.pack('?', True))
+                sendSuccess(client, True, addr)
             else:
-                client.sendall(struct.pack('?', False))
+                sendSuccess(client, False, addr)
         else:
             print_gui_with_log("{} tried to send invalid command: {}".format(addr, incoming))
+            sendSuccess(client, False, addr)
             mess = 0
 
         if mess != 0:

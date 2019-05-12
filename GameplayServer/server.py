@@ -31,6 +31,7 @@ def print_log(msg):
 
 try:
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serverSocketUDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 except socket.error:
     print_log("Failed to create initial socket. Exiting")
     log_file.close()
@@ -51,6 +52,17 @@ def getIP():
 inputQueue = queue.Queue()
 runningInputThread = True
 inputThreadOpen = False
+
+def sendBufferToClientUDP(clientAddr, buf, addNum):
+    try:
+        if addNum:
+            buf = struct.pack("I", 4294967295) + buf  # 2**32-1     b'\xff\xff\xff\xff'
+            
+        serverSocketUDP.sendto(buf, (clientAddr[0], 8058))
+        if debug:
+            print_log('Sent {} to {} using UDP'.format(buf, clientAddr))
+    except:
+        print_log('Failed to send {} to {} using UDP'.format(buf, clientAddr))
 
 def read_kbd_input(inputQueue):
     global inputThreadOpen
@@ -152,11 +164,13 @@ while not portChosen:
 
 try:
     serverSocket.bind((host, 8059))
+    serverSocketUDP.bind((host, 8058))
     print_log(' ')
     print_log('        Server is running on --> {}:{}'.format(host, '8059'))
+    print_log('        Server UDP is running on --> {}:{}'.format(host, '8058'))
     print_log(' ')
 except:
-    print_log('    Port {} is already in use on the host machine, free the port and try again.'.format('8059'))
+    print_log('    Port {} or {} is already in use on the host machine, make sure both ports and try again.'.format('8059', '8058'))
 
 playerCap = 2
 while playerCap == -1:
@@ -173,6 +187,9 @@ game = GameClass()
 serverSocket.listen(5)
 serverSocket.setblocking(0)
 serverSocket.settimeout(0.2)
+
+serverSocketUDP.setblocking(0)
+serverSocketUDP.settimeout(0.001)
 
 debug = False
 
@@ -210,6 +227,8 @@ while running:
             print_log('list-clients - Lists all clients connected to the server')
             print_log('resend-names - Resends all names to connected clients')
             print_log('debug - enable/disable debug mode.')
+            print_log('resend-client-ids - Resends all clients IDs to clients')
+            print_log('send-udp-testpacket-(id)(id)(id)(...) - Sends a testpacket in udp to a client with the specified id, example: "send-udp-testpacket-(3)(5)", "send-udp-testpacket-(7)"')
             print_log(' ')
         elif line == 'exit':
             print_log('Attempting to close the server')
@@ -248,6 +267,19 @@ while running:
                 status = "DISABLED"
 
             print_log('Debug is {}'.format(status))
+        elif line == 'resend-client-ids':
+            game.send_client_IDs()
+            print_log('Resending all client IDs to clients')
+        elif line.startswith('send-udp-testpacket-('):
+            ctsdIDs = re.findall('\d+', line)
+            ctsdIDs = list(map(int, ctsdIDs))
+            for clientID in ctsdIDs:
+                client = game.get_client_id(clientID)
+                if not client:
+                    print_log("Couldn't find client with id {}".format(clientID))
+                else:
+                    sendBufferToClientUDP(client.addr, struct.pack("II", 10, 123456), True)
+            print_log('Sent testpacket data')
         else:
             print_log('{} is a unknown command, type help for a list of commands.'.format(line))
 
@@ -263,18 +295,34 @@ while running:
             client.clientSocket.setblocking(0)
             client.clientSocket.settimeout(0.001)
 
-
     game.update_print_request()
 
     for msg in game.prints:
         print_log(msg)
     game.prints = []
 
+    # Hadndle udp input
+    gotData = True
+    while gotData:
+        try:
+            data, addr = serverSocketUDP.recvfrom(1024)
+            gotData = True
+        except:
+            gotData = False
+
+        if gotData:
+            game.handle_input(None, data, "udp")
+
     game.recv_data()
 
     game.clean_clients()
 
     game.send_data()
+
+    # Send requested udp packets
+    for udpRequestSend in game.udpToSend:
+        sendBufferToClientUDP(udpRequestSend[0], udpRequestSend[1], udpRequestSend[2])
+    game.udpToSend = []
 
 print_log('        Attempting to kick all clients from server')
 for client in game.clients:
@@ -293,7 +341,6 @@ print_log('        Accept clients thread safetly closed down')
 print_log('        Attempting to close down serversocket')
 serverSocket.close()
 print_log('        Serversocket closed')
-print_log(' ')
 print_log('        Closing down input thread')
 runningInputThread = False
 print_log('    Press ENTER to ensure safe closedown of input thread...')
@@ -301,13 +348,12 @@ while inputThreadOpen:
     time.sleep(0.1)
 print_log('        Thread closed properly')
 
-print_log(' ')
 print_log('        Attempting to close logfile reload thread')
 runningLogFileThread = False
 while LogfileThreadOpen:
     time.sleep(0.1)
 print_log('        Logfile reload thread safetly closed down')
-print_log(' ')
+
 print_log('        Attempting to close down log file, assume success')
 log_file.close()
 print('        Logfile closed down properly')

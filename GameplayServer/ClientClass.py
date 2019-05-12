@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import time
+import struct
+import socket
 
 class ClientClass:
     def __init__(self, clientID, connection, addr, debug):
@@ -18,6 +20,7 @@ class ClientClass:
         # 1 == send to everyone else
         # 2 == sleep
         # 3 == send to self alone
+        # 4 == send to self udp
 
         self.recver = []
 
@@ -29,16 +32,10 @@ class ClientClass:
 
         self.lastPacket = time.time() + 11
 
-    def sendToClient(self, msg):
+    def sendBufferToClient(self, buf, addNum):
         try:
-            self.clientSocket.sendall((msg + '\n').encode('utf-8'))
-            if self.debug:
-                self.prints.append('Sent {} to {}'.format(msg, self.addr))
-        except:
-            self.prints.append('Failed to send {} to {}'.format(msg, self.addr))
-
-    def sendBufferToClient(self, buf):
-        try:
+            if addNum:
+                buf = struct.pack("I", 4294967295) + buf # 2**32-1     b'\xff\xff\xff\xff'
             self.clientSocket.sendall(buf)
             if self.debug:
                 self.prints.append('Sent {} to {}'.format(buf, self.addr))
