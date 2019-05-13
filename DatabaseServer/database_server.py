@@ -30,7 +30,7 @@ session_temp = str(int(time.time()))
 
 SESSION_ID = session_temp[len(session_temp) - 10:]
 
-log_file = open(os.path.join(path_to_logs, "Log-database-server-{}-{}.txt".format(SESSION_ID, str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
+log_file = open(os.path.join(path_to_logs, "Log-db-{}-{}.txt".format(SESSION_ID, str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
 
 serverSocket = None
 
@@ -62,7 +62,7 @@ def reload_log_file(timeInterval):
             print_gui_with_log('Reloading logfile...')
 
             log_file.close()
-            log_file = open(os.path.join(path_to_logs, "Log-gameplay-server-{}-{}.txt".format(SESSION_ID, str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
+            log_file = open(os.path.join(path_to_logs, "Log-db-{}-{}.txt".format(SESSION_ID, str(datetime.datetime.today().replace(microsecond=0)).replace(":", ";"))), "a")
 
             print_gui_with_log('New logfile started...')
 

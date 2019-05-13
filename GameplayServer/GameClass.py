@@ -40,35 +40,7 @@ class GameClass:
                 gotData = False
 
             if gotData:
-                self.handle_input(client, incoming, "tcp")
-
-    def handle_input(self, client, incoming, socket_type):
-        socket_type = socket_type.lower()
-        if not socket_type in ["tcp", "udp"]:
-            self.prints.append('Incorrect socket type in handle input call: {}, alowed: "tcp", "udp"'.format(socket_type))
-            return False
-        if socket_type == "tcp" and not client:
-            return False
-
-        if len(incoming) == 0:
-            if socket_type == "tcp":
-                self.prints.append('Kicked {} from the server'.format(client.addr))
-                client.name = ' '
-                for client2 in self.clients:
-                    if client.clientID == client2.clientID:
-                        continue
-                    data = struct.pack('I', 5) + (' ' + '\x00').encode('utf-8')
-                    client2.recvMessage.append(data)
-                    client2.recver.append(0)
-                client.clientSocket.close()
-                client.toBeRemoved = True
-                return False
-            elif socket_type == "udp":
-                self.prints.append('No data sent, unknown client')
-                return False
-
-        if socket_type == "tcp":
-            client.lastPacket = time.time()
+                self.handle_tcp_data(client, incoming)
 
         """
         0 = ping
@@ -82,138 +54,151 @@ class GameClass:
         8 = Attack
         """
 
+    def handle_tcp_data(self, client, data):
+        if len(data) == 0:
+            self.prints.append('Kicked {} from the server'.format(client.addr))
+            client.name = ' '
+            for client2 in self.clients:
+                if client.clientID == client2.clientID:
+                    continue
+                data = struct.pack('I', 5) + (' ' + '\x00').encode('utf-8')
+                client2.addNetworkItem(0, data)
+            client.clientSocket.close()
+            client.toBeRemoved = True
+            return False
+
+        client.lastPacket = time.time()
+
         if self.debug:
-            if socket_type == "tcp":
-                self.prints.append("Recv: {} from {} using {}".format(incoming, client.addr, socket_type))
-            elif socket_type == "udp":
-                self.prints.append("Recv: {} from {} using {}".format(incoming, "a UDP packet", socket_type))
+            self.prints.append("Recv: {} from {} using TCP".format(data, client.addr))
 
-        for part in list(filter(None, incoming.split(b'\xff\xff\xff\xff'))):
-            if socket_type == "udp":
-                client = self.get_client_id(struct.unpack("I", part[:4])[0])
-                if not client:
-                    continue
-                else:
-                    part = part[4:]
-            unpacked_id = struct.unpack('I', part[:4])[0]
-            if unpacked_id == 0:
-                client.recvMessage.append(part)
-                client.recver.append(0)
-            elif unpacked_id == 1:
-                for client2 in self.clients:
-                    if client.clientID == client2.clientID:
-                        continue
-                    client2.recvMessage.append(part)
-                    client2.recver.append(4)
-            elif unpacked_id == 2 or unpacked_id == 3:
-                # 0 == Login success
-                # 1 == Login fail
-                # 2 == Database down
-                data = part[4:].decode('utf-8').strip()
+        for part in list(filter(None, data.split(b'\xff\xff\xff\xff'))):
+            self.handle_input_part_data(client, part)
 
-                splitData = list(filter(None, data.split('\x00')))
-                if len(splitData) != 2:
-                    client.recvMessage.append(struct.pack('II', 7, 1))
-                    client.recver.append(0)
-                    continue
+    def handle_udp_data(self, data, receivedAddr):
+        if len(data) == 0:
+            self.print.append('UDP data handeling request : no data given')
+            return False
 
-                name, password = splitData
+        if self.debug:
+            self.prints.append("Recv: {} from the UDP socket using".format(data))
 
-                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                s.setblocking(0)
-                s.settimeout(1)
-                try:
-                    s.connect(('192.168.10.171', 8060))
-                except:
-                    self.prints.append("Couldn't connect to database.")
-                    client.recvMessage.append(struct.pack('II', 7, 2))
-                    client.recver.append(0)
-                    continue
-
-                if unpacked_id == 2:
-                    s.sendall(("l" + "\x00" + name + "\x00" + password + "\x00").encode("utf-8"))
-                elif unpacked_id == 3:
-                    s.sendall(("c" + "\x00" + name + "\x00" + password + "\x00").encode("utf-8"))
-                
-                try:
-                    db_response = s.recv(32)
-                except:
-                    client.recvMessage.append(struct.pack('II', 7, 1))
-                    client.recver.append(0)
-                    continue
-
-                db_response = struct.unpack('?', db_response)[0]
-
-                success = False
-                if not db_response:
-                    success = False
-                    self.prints.append('{}: failed to {}'.format(client.addr, ("login" if unpacked_id == 2 else "create account")))
-                elif db_response:
-                    self.prints.append('{}: successful login or account creation. Addr: {}'.format(name, client.addr))
-                    success = True
-                    client.name = name
-
-                    for client2 in self.clients:
-                        if client.clientID == client2.clientID:
-                            continue
-                        data = struct.pack('I', 5) + (client.name + '\x00').encode('utf-8')
-                        client2.recvMessage.append(data)
-                        client2.recver.append(0)
-
-                        data = struct.pack('I', 5) + (client2.name + '\x00').encode('utf-8')
-                        client.recvMessage.append(data)
-                        client.recver.append(0)
-                        
-                client.recvMessage.insert(0, 0.08)
-                client.recver.insert(0, 2)
-
-                client.recvMessage.insert(0, struct.pack('II', 7, (0 if success else 1)))
-                client.recver.insert(0, 0)
-
-                client.recvMessage.insert(0, struct.pack('II', 9, client.clientID))
-                client.recver.insert(0, 0)
+        for part in list(filter(None, data.split(b'\xff\xff\xff\xff'))):
+            client = self.get_client_by_id(struct.unpack("I", part[:4])[0])
+            if not client:
+                continue
             else:
+                part = part[4:]
+
+            client.lastPacket = time.time()
+
+            client.UDP_addr = receivedAddr
+
+            self.handle_input_part_data(client, part)
+
+    def handle_input_part_data(self, client, part):
+        unpacked_id = struct.unpack('I', part[:4])[0]
+        if unpacked_id == 0:
+            client.addNetworkItem(0, part)
+        elif unpacked_id == 1:
+            for client2 in self.clients:
+                if client.clientID == client2.clientID:
+                    continue
+                client2.addNetworkItem(4, part)
+        elif unpacked_id == 2 or unpacked_id == 3:
+            # 0 == Login success
+            # 1 == Login fail
+            # 2 == Database down
+            data = part[4:].decode('utf-8').strip()
+
+            splitData = list(filter(None, data.split('\x00')))
+            if len(splitData) != 2:
+                client.addNetworkItem(0, struct.pack('II', 7, 1))
+                return
+
+            name, password = splitData
+
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.setblocking(0)
+            s.settimeout(1)
+            try:
+                s.connect(('192.168.10.171', 8060))
+            except:
+                self.prints.append("Couldn't connect to database.")
+                client.addNetworkItem(0, struct.pack('II', 7, 2))
+                return
+
+            if unpacked_id == 2:
+                s.sendall(("l" + "\x00" + name + "\x00" + password + "\x00").encode("utf-8"))
+            elif unpacked_id == 3:
+                s.sendall(("c" + "\x00" + name + "\x00" + password + "\x00").encode("utf-8"))
+            
+            try:
+                db_response = s.recv(32)
+            except:
+                client.addNetworkItem(0, struct.pack('II', 7, 1))
+                return
+
+            db_response = struct.unpack('?', db_response)[0]
+
+            success = False
+            if not db_response:
+                success = False
+                self.prints.append('{}: failed to {}'.format(client.addr, ("login" if unpacked_id == 2 else "create account")))
+            elif db_response:
+                self.prints.append('{}: successful login or account creation. Addr: {}'.format(name, client.addr))
+                success = True
+                client.name = name
+
                 for client2 in self.clients:
                     if client.clientID == client2.clientID:
                         continue
-                    client2.recvMessage.append(part)
-                    client2.recver.append(0)
+                    data = struct.pack('I', 5) + (client.name + '\x00').encode('utf-8')
+                    client2.addNetworkItem(0, data)
+
+                    data = struct.pack('I', 5) + (client2.name + '\x00').encode('utf-8')
+                    client.addNetworkItem(0, data)
+
+            # Not neccecary as client now can read name data directly aftyer login       
+            #client.addNetworkItem(2, 0.08)
+
+            client.addNetworkItemLeft(0, struct.pack('II', 7, (0 if success else 1)))
+
+            client.addNetworkItemLeft(0, struct.pack('II', 9, client.clientID))
+        else:
+            for client2 in self.clients:
+                if client.clientID == client2.clientID:
+                    continue
+                client2.addNetworkItem(0, part)
 
     def send_data(self):
         for client in self.clients:
-            firstSend = True
-            removeItem = True
+            firstMessageSent = True
             if client.calcSleepTime():
-                while len(client.recvMessage) > 0 and client.calcSleepTime():
-                #if len(client.recvMessage) > 0:
-                    if len(client.recver) == 0 or client.recver[0] == 0:
-                        client.sendBufferToClient(client.recvMessage[0], True)
-                    elif client.recver[0] == 1:
+                while len(client.networkMessages) > 0 and client.calcSleepTime():
+                    typeOfMessage = client.networkTypesOfItem.popleft()
+                    networkData = client.networkMessages.popleft()
+                    
+                    if typeOfMessage == 0:
+                        client.send_buffer_to_client(networkData, True)
+                    elif typeOfMessage == 1:
                         for client2 in self.clients:
                             if client.clientID == client2.clientID:
                                 continue
-                            client2.sendBufferToClient(client.recvMessage[0], True)
-                    elif client.recver[0] == 2:
-                        client.setSleepTime(client.recvMessage[0])
-                    elif client.recver[0] == 3:
-                        if firstSend:
-                            client.sendBufferToClient(client.recvMessage[0], True)
-                            del client.recvMessage[0]
-                            if len(client.recver) > 0:
-                                del client.recver[0]
-                            removeItem = False
+                            client2.send_buffer_to_client(networkData, True)
+                    elif typeOfMessage == 2:
+                        client.setSleepTime(networkData)
+                    elif typeOfMessage == 3:
+                        if firstMessageSent:
+                            client.send_buffer_to_client(networkData, True)
                             break
                         else:
-                            removeItem = False
+                            client.addNetworkItemLeft(typeOfMessage, networkData)
                             break
-                    elif client.recver[0] == 4:
-                        self.udpToSend.append((client.addr, client.recvMessage[0], True))
+                    elif typeOfMessage == 4:
+                        self.udpToSend.append((client, client.recvMessage[0], True))
 
-                    if removeItem:
-                        del client.recvMessage[0]
-                        if len(client.recver) > 0:
-                            del client.recver[0]
-                    firstSend = False
+                    firstMessageSent = False
 
     def resend_names(self):
         for client in self.clients:
@@ -242,13 +227,21 @@ class GameClass:
             self.prints += client.prints
             client.prints = []
 
-    def get_client_addr(self, addr):
+    def get_client_by_addr(self, addr):
         for client in self.clients:
             if addr == client.addr:
                 return client
         return False
 
-    def get_client_id(self, clientID):
+    def get_client_by_UDP_addr(self, udpAddr):
+        if udpAddr == None:
+            return False
+        for client in self.clients:
+            if udpAddr == client.UDPAddr:
+                return client
+        return None
+
+    def get_client_by_id(self, clientID):
         for client in self.clients:
             if clientID == client.clientID:
                 return client

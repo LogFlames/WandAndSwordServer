@@ -1,0 +1,21 @@
+ 
+Server is running on --> 192.168.10.171:8060
+ 
+Starting logfile reload thread
+Logfile will reload every 7200 seconds
+Logfile reload thread started
+ 
+Server started: 2019-05-13 21:04:46.739176
+Incomming connection from ('192.168.10.171', 64475)
+('192.168.10.171', 64475) tried to login to an account with Log and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c at 2019-05-13 21;07;44
+Result of login: True
+Incomming connection from ('192.168.10.171', 64483)
+('192.168.10.171', 64483) tried to login to an account with Log and 3f666c39681952deec3d2e2e673ad78450fa8af810653852fb7f18eb240c521c at 2019-05-13 21;08;48
+Result of login: True
+>>> exit
+ 
+ 
+Server closed: 2019-05-13 21:09:02.363059
+Attempting logfile reload thread closedown
+Logfile reload thread stopped
+Attempting to close logfile, assume success.

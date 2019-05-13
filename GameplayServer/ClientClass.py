@@ -3,18 +3,18 @@
 import time
 import struct
 import socket
+from collections import deque
 
 class ClientClass:
     def __init__(self, clientID, connection, addr, debug):
         self.clientID = clientID
         self.addr = addr
+        self.UDPAddr = None
         self.clientSocket = connection
 
         self.name = " "
 
         self.toBeRemoved = False
-
-        self.recvMessage = []
 
         # 0 == send to self
         # 1 == send to everyone else
@@ -22,7 +22,8 @@ class ClientClass:
         # 3 == send to self alone
         # 4 == send to self udp
 
-        self.recver = []
+        self.networkMessages = deque()
+        self.networkTypesOfItem = deque()
 
         self.sleepTime = 0
 
@@ -32,7 +33,15 @@ class ClientClass:
 
         self.lastPacket = time.time() + 11
 
-    def sendBufferToClient(self, buf, addNum):
+    def addNetworkItem(self, typeOfItem, networkMessage):
+        self.networkTypesOfItem.append(typeOfItem)
+        self.networkMessages.append(networkMessage)
+
+    def addNetworkItemLeft(self, typeOfItem, networkMessage):
+        self.networkTypesOfItem.appendleft(typeOfItem)
+        self.networkMessages.appendleft(networkMessage)
+
+    def send_buffer_to_client(self, buf, addNum):
         try:
             if addNum:
                 buf = struct.pack("I", 4294967295) + buf # 2**32-1     b'\xff\xff\xff\xff'
