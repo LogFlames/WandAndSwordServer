@@ -37,9 +37,8 @@ class GameClass:
                 incoming = client.clientSocket.recv(1024)
                 gotData = True
             except:
-                gotData = False
-
-            if gotData:
+                pass
+            else:
                 self.handle_tcp_data(client, incoming)
 
         """

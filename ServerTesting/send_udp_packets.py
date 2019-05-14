@@ -5,8 +5,8 @@ import struct
 
 udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-port = int(input("port: "))
 host = input("Host: ")
+port = int(input("port: "))
 
 while True:
     time.sleep(0.1)

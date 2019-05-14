@@ -91,11 +91,11 @@ def send_buffer_to_client_UDP(client, buf, addNum):
         if addNum:
             buf = struct.pack("I", 4294967295) + buf  # 2**32-1     b'\xff\xff\xff\xff'
             
-        serverSocketUDP.sendto(buf, client.addr)
+        serverSocketUDP.sendto(buf, client.UDPAddr)
         if debug:
-            print_log('Sent {} to {} using UDP'.format(buf, client.addr))
+            print_log('Sent {} to {} using UDP'.format(buf, client.UDPAddr))
     except:
-        print_log('Failed to send {} to {} using UDP'.format(buf, client.addr))
+        print_log('Failed to send {} to {} using UDP'.format(buf, client.UDPAddr))
 
 inputQueue = queue.Queue()
 runningInputThread = True
@@ -128,9 +128,8 @@ def accept_clients(playerCap, game):
         try:
             clientSocket, addr = serverSocket.accept()
         except:
-            clientSocket = False
-
-        if clientSocket:
+            pass
+        else:
             clientID += 1
             acceptClientsQueue.put(ClientClass(clientID, clientSocket, addr, debug))
             print_log('Incoming connection from {}'.format(addr))
@@ -298,9 +297,8 @@ while running:
             data, addr = serverSocketUDP.recvfrom(1024)
             gotData = True
         except:
-            gotData = False
-
-        if gotData:
+            pass
+        else:
             game.handle_udp_data(data, addr)
 
     # Handle TCP input

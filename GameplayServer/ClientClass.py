@@ -9,6 +9,7 @@ class ClientClass:
     def __init__(self, clientID, connection, addr, debug):
         self.clientID = clientID
         self.addr = addr
+
         self.UDPAddr = None
         self.clientSocket = connection
 
