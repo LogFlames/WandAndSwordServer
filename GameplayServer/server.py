@@ -83,7 +83,6 @@ def getIP():
 
     return s.getsockname()[0]
 
-# TEST STATE : SEND BUFFER TO NORMAL ADDRESS
 def send_buffer_to_client_UDP(client, buf, addNum):
     if client.UDPAddr == None:
         return False
