@@ -7,3 +7,5 @@
 6 = player penalty
 7 = Login success
 8 = Attack
+9 = clientID
+10 = Testpackets

@@ -19,7 +19,6 @@ OHl = On Hold
 * Not - Emotes
 * Not - Attacks
 * Not - Special Abilities
-* Not - Combos
 * Not - Awards for winning (Rare items, more xp, more currency)
 
 /// SERVER & CLIENT
@@ -42,6 +41,7 @@ OHl = On Hold
 * Don - Add a kick function based on not recieving ping packets
 * Don - Evt: Add error message indicator (UserName or Password Incorrect OR Couldn't connect to datebase)
 * Don - Add a spliter when sending more data (ex packet(posdata:ping:more_data) indstead of packet(posdata) packet(ping) packet(more_data))
+* Not - Add comments
 
 /// DATABASE
 * Not - Save files in unicode
@@ -62,7 +62,6 @@ OHl = On Hold
 * Hype beast (Buy all the cosmetics)
 
 /// SYSTEM
-* Not - Server Stress Tester (client amount, average data transfer / receiving rate etc)
 * Not - Ability to control server via text message
 * Not - Setup SSH
 * Not - Setup FTP
