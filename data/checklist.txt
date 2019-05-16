@@ -66,3 +66,10 @@ OHl = On Hold
 * Not - Ability to control server via text message
 * Not - Setup SSH
 * Not - Setup FTP
+
+/// SERVER (Inside the server box "mårdfällan")
+* Not - Raspberry Pi 3 B+ (Database) 16GB SD CARD
+* Not - Raspberry Pi 3 B+ (Web server) 8GB SD CARD
+* Not - Raspberry Pi 3 B+ (Test Server) 8GB SD CARD
+* Not - Rock64 (Main purpose server) 16GB SD CARD
+* Not - Rock64 (Open RPG server) 8GB SD CARD
