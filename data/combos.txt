@@ -1,0 +1,5 @@
+IceBall = Left Click
+Fireball = Right Click
+Stun Combo = Right & Left Click
+Stun Super Combo = righ & Left Click, Arrow up & Arrow down
+

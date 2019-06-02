@@ -1,0 +1,3 @@
+server_tcp = 8059
+server_udp = 8058
+database_tcp = 8060
