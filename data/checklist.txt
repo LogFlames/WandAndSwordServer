@@ -1,53 +1,51 @@
 Don = Done
 Not = Not Done
 OHl = On Hold
-
-/// DEADLINES
-2019-06-13 - Game will be complete without game bare bones game mechanics and all networking done.
-2019-08-13 - Game will be completed with mechanics and animations plus sound fully implemented.
+INP = In Progress
 
 /// BUGS
-* Don - Client doesn't time out if disconnected from server while waiting for answer from gameplay server for login details
+* Don - Client doesn't time out if disconnected from server while waiting for answer from gameplay server for login details * Not - Raspberry Pi 3 B+ (Matchmaking Server) 8GB SD CARD * LogFlames
 
 /// LEVEL DESIGN
-* Not - Players can make custome maps.
-* Not - 3 Maps, Forest, Open plain & Castle.
+* Not - Players can make custome maps. * Mr Ikea
+* Not - 3 Maps, Forest, Open plain & Castle. * Mr Ikea
 
 /// PLAYER
-* Not - Animations
-* Not - Character Customization
-* Not - Emotes
-* Not - Attacks
-* Not - Special Abilities
-* Not - Combos
-* Not - Awards for winning (Rare items, more xp, more currency)
+* Not - Animations * Mr Ikea
+* Not - Character Customization * Mr Ikea
+* Not - Emotes * Mr Ikea
+* Not - Attacks * Mr Ikea
+* Not - Special Abilities * Mr Ikea
+* Not - Combos * Mr Ikea
+* Not - Awards for winning (Rare items, more xp, more currency) * Mr Ikea
 
 /// SERVER & CLIENT
-* Don - Latency Measurements
-* Don - Multiple clients
-* Don - Make so that the clients can see each others movement
-* Don - Client Login
-* Don - Client Register
-* Don - Database Login
-* Don - Database Register
-* Don - Clients recieve name
-* Not - Admin Accounts
-* OHl - Lobby Search
-* Don - Kick individual client
-* Don - Add logs to gameplay server
-* Don - Restart log file once per timeinterval (database)
-* Don - Restart log file once per timeinterval (gameplay)
-* Not - Apply multithreading to accepting and handeling clients (database)
-* Don - Apply multithreading to accept clients (gameplay)
-* Don - Add a kick function based on not recieving ping packets
-* Don - Evt: Add error message indicator (UserName or Password Incorrect OR Couldn't connect to datebase)
-* Don - Add a spliter when sending more data (ex packet(posdata:ping:more_data) indstead of packet(posdata) packet(ping) packet(more_data))
+* INP - Scriptify everything on the client side * Mr Ikea
+* Don - Latency Measurements * LogFlames & Mr Ikea
+* Don - Multiple clients * LogFlames
+* OHL - Make so that the clients can see each others movement * Mr Ikea & LogFlames
+* Don - Client Login * LogFlames
+* Don - Client Register * LogFlames
+* Don - Database Login * LogFlames
+* Don - Database Register * LogFlames
+* Don - Clients recieve name * Mr Ikea & LogFlames
+* Not - Admin Accounts * LogFlames
+* OHl - Lobby Search * LogFlames
+* Don - Kick individual client * LogFlames
+* Don - Add logs to gameplay server * LogFlames
+* Don - Restart log file once per timeinterval (database) * LogFlames
+* Don - Restart log file once per timeinterval (gameplay) * LogFlames
+* Not - Apply multithreading to accepting and handeling clients (database) * LogFlames
+* Don - Apply multithreading to accept clients (gameplay) * LogFlames
+* Don - Add a kick function based on not recieving ping packets * LogFlames
+* Don - Evt: Add error message indicator (UserName or Password Incorrect OR Couldn't connect to datebase) * LogFlames
+* Don - Add a spliter when sending more data (ex packet(posdata:ping:more_data) indstead of packet(posdata) packet(ping) packet(more_data)) * LogFlames
 
 /// DATABASE
-* Not - Save files in unicode
+* Not - Save files in unicode * LogFlames
 
 /// RANKING
-* Not - Global ranking system
+* Not - Global ranking system * LogFlames & Mr Ikea
 
 /// ACHIEVMENTS
 * It's a tie! (Tie 5 games)
@@ -62,13 +60,12 @@ OHl = On Hold
 * Hype beast (Buy all the cosmetics)
 
 /// SYSTEM
-* Not - Server Stress Tester (client amount, average data transfer / receiving rate etc)
-* Not - Ability to control server via text message
-* Not - Setup SSH
-* Not - Setup FTP
+* Not - Server Stress Tester (client amount, average data transfer / receiving rate etc) * LogFlames
+* Not - Setup SSH * Mr Ikea
+* Not - Setup FTP * Mr Ikea
 
-/// SERVER (Inside the server box "mårdfällan")
-* Not - Raspberry Pi 3 B+ (Database) 16GB SD CARD
-* Not - Raspberry Pi 3 B+ (Web server) 8GB SD CARD
-* Not - Raspberry Pi 3 B+ (Test Server) 8GB SD CARD
-* Not - Rock64 (Open RPG server) 8GB SD CARD
+/// SERVER (Inside the server box "mårdfällan") 
+* Not - Raspberry Pi 3 B+ (Database) 16GB SD CARD * Mr Ikea
+* Not - Raspberry Pi 3 B+ (Web server) 8GB SD CARD * Mr Ikea
+* Not - Raspberry Pi 3 B+ (Matchmaking Server) 8GB SD CARD * Mr Ikea
+* Not - Raspberry Pi 3 B+ (Hosting Server) 8GB SD CARD * Mr Ikea
