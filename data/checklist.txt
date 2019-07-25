@@ -11,16 +11,17 @@ INP = In Progress
 * Not - 3 Maps, Forest, Open plain & Castle. * Mr Ikea
 
 /// PLAYER
+* Not - Attacks
 * Not - Animations * Mr Ikea
 * Not - Character Customization * Mr Ikea
 * Not - Emotes * Mr Ikea
-* Not - Attacks * Mr Ikea
+* Not - Attack Animations * Mr Ikea
 * Not - Special Abilities * Mr Ikea
 * Not - Combos * Mr Ikea
 * Not - Awards for winning (Rare items, more xp, more currency) * Mr Ikea
 
 /// SERVER & CLIENT
-* INP - Scriptify everything on the client side * Mr Ikea
+* Don - Scriptify everything on the client side * Mr Ikea
 * Don - Latency Measurements * LogFlames & Mr Ikea
 * Don - Multiple clients * LogFlames
 * OHL - Make so that the clients can see each others movement * Mr Ikea & LogFlames
@@ -64,7 +65,7 @@ INP = In Progress
 * Not - Setup SSH * Mr Ikea
 * Not - Setup FTP * Mr Ikea
 
-/// SERVER (Inside the server box "mårdfällan") 
+/// SERVERS
 * Not - Raspberry Pi 3 B+ (Database) 16GB SD CARD * Mr Ikea
 * Not - Raspberry Pi 3 B+ (Web server) 8GB SD CARD * Mr Ikea
 * Not - Raspberry Pi 3 B+ (Matchmaking Server) 8GB SD CARD * Mr Ikea

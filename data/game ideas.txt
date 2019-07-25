@@ -1,0 +1,85 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+WAND AND SWORD GAME IDEAS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Social System
+* Alliances
+	Players can create alliances
+	Alliance name will be displayed next to the player tag in game
+	Alliance wars
+	Alliance treaties
+	Alliance pacts
+* Trading
+	Trading Unions
+	Player to player trading
+	Economy system
+------------------------------------------------------------------------------------------------------
+HEALING
+* WIZARD HEAL 
+	Needs 1 player
+	Player needs to perform "Wizards fix"
+	Heals the player with 5%
+	2 minute cooldown
+* WIZARD GROUP HEAL
+	Needs 4 players or more
+	Player all need to perform "Wizards fix" at the same time
+	Heals all players to 100% health
+* KNIGHT HEAL "God's Prayer"
+	1 minute cooldown
+	Needs 1 player
+	Player perforems "prayer" 
+	Heals the player with 5%
+* KNIGHT GROUP HEAL "God's Sermon"
+	1 minute cooldown
+	Needs 6 players or more
+	All players need to perform "prayer" at the same time
+	Heals all 4 players to 100% health
+' Prolonged suffering
+	Player needs to have item "Potion of EXTREME suffering"
+	6 hour cooldown
+	After 24 hours the affected player will get receive 200.000 damage
+------------------------------------------------------------------------------------------------------
+SPAWNING
+* Player Summoning
+	Needs 1 player(Needs to be Wizard)
+	Performes "Human Summoning Spell"
+	30 minute cooldown
+	Spawnes the selected DEAD player
+	Takes 50% of the wizards health and gives it to the summoning player
+* Demon Summoning
+	No Cooldown
+	Needs 5 players or more
+	Need to sacrifice a player(picked randomly among the ones performing the ritual)
+	Need specific items to sacrifice to
+	Demon will spawn "wild" attempting to kill everything in close proximety
+	Demon can be tamed by a player(Needs to be Wizard) 
+------------------------------------------------------------------------------------------------------
+ITEMS
+* Potion of Healing
+	Heals the player 20%
+* Bottle o Speed
+	Player speed increased by 10%
+* Strength Potion
+	Player strength increased by 10%
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ZOMBIE HUNT GAME IDEAS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- Explodes on death (explosions can have various effects, like leaving a smoke cloud, fire pool, poison gas cloud etc.)
+
+- Boosted speed
+
+- Berserk (does more damage but attacks indiscriminately)
+
+- Vengeful (becomes stronger as it takes damage)
+
+- Summoner (calls in reinforcements)
+
+- Vampiric (can heal from dealing damage to you)
+
+- Decaying (loses health gradually)
+
+- Symbiotic (boosts nearby allies)
+
+- Dasher (leaps in your direction after getting close enough)
